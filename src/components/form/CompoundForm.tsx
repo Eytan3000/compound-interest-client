@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { Button, Input, Sheet, Typography } from '@mui/joy';
 import { makeStyles } from '@mui/styles';
 import { Grid } from '@mui/material';
+import { calculateFutureValue } from '../../utils/helpers';
 
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
+interface ParentProps {
+  sendDataToParent: (data: {futureValue:string, totalInterest:string}) => void;
+}
+
 const useStyles = makeStyles({
   FormComponent2_input: {
     width: '200px',
@@ -19,9 +24,8 @@ const useStyles = makeStyles({
     width: '600px',
   },
 });
-
 //-----------------------------------------------------------
-export default function CompoundForm() {
+export default function CompoundForm({sendDataToParent}:ParentProps) {
   const classes = useStyles();
 
   const [principal, setPrincipal] = useState<string>('');
@@ -29,19 +33,35 @@ export default function CompoundForm() {
   const [years, setYears] = useState<string>('');
   const [interestRate, setInterestRate] = useState<string>('');
 
-  const [futureValue, setFutureValue] = useState<string>('');
-  const [totalInteres, setTotalInterest] = useState<string>('');
+  // const [futureValue, setFutureValue] = useState<string>('');
+  // const [totalInteres, setTotalInterest] = useState<string>('');
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(principal, monthlyContribution, years, interestRate);
+
+    const { futureValue, totalInterest  } = calculateFutureValue(
+      +principal,
+      +monthlyContribution,
+      +years,
+      +interestRate
+    );
+
+    sendDataToParent({ futureValue, totalInterest  })
 
 
-    setPrincipal('');
+    // setPrincipal('');
+    // setMonthlyContribution('');
+    // setYears('');
+    // setInterestRate('');
+  };
+  
+  const handleReset = () =>{
+        setPrincipal('');
     setMonthlyContribution('');
     setYears('');
     setInterestRate('');
-  };
+  }
+
   const handleInputChange = (e: Event): void => {
     if (e.target.id === 'initial-investment') setPrincipal(e.target.value);
     if (e.target.id === 'monthly-contribution')
@@ -53,7 +73,6 @@ export default function CompoundForm() {
     <Sheet variant="outlined" className={classes.mainSheet}>
       <form onSubmit={handleSubmit}>
         <Grid container direction={'column'}>
-
           <Grid
             className={classes.input}
             item
@@ -101,7 +120,7 @@ export default function CompoundForm() {
             justifyContent={'space-between'}
             marginY={4}>
             <Typography marginY={1} marginX={4}>
-            Years to Grow
+              Years to Grow
             </Typography>
             <Input
               value={years}
@@ -121,7 +140,7 @@ export default function CompoundForm() {
             justifyContent={'space-between'}
             marginY={4}>
             <Typography marginY={1} marginX={4}>
-            Estimated Interest Rate (%)
+              Estimated Interest Rate (%)
             </Typography>
             <Input
               value={interestRate}
@@ -139,9 +158,12 @@ export default function CompoundForm() {
             xs={12}
             padding={2}
             display="flex"
-            justifyContent="flex-end">
+            justifyContent="flex-end"
+            >
+            <Button color="danger" sx={{ marginX:'8px' }} onClick={handleReset}>Reset</Button>
             <Button type="submit">Submit</Button>
           </Grid>
+
         </Grid>
       </form>
     </Sheet>

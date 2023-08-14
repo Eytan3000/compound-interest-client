@@ -1,17 +1,3 @@
-// export function calculateFutureValue(
-//     // FV: number,// Future Value
-//     P: number,// Initial investment (principal)
-//     PMT: number, //Monthly contribution
-//     t: number,// Number of years
-//     r: number,// Annual interest rate (decimal)
-//     n: number = 1,// Number of times interest is compounded per year
-// ): number {
-//     const FV = P * (1 + r / n) ^ (n * t); //Future Value
-//     const VA = PMT * ((1 + r / n) ^ (n * t) - 1) / (r / n); //Future Value of Annuity
-
-//     return FV + VA;
-// }
-
 interface FutureValueResult {
     futureValue: string;
     totalInterest: string;
@@ -40,16 +26,6 @@ export function calculateFutureValue(principal:number, monthlyContribution:numbe
         totalInterest: (totalFutureValue - depositeSum).toFixed(),
     }
 }
-
-// Example usage
-// const currentPrincipal = 10000;
-// const monthlyContribution = 200;
-// const yearsToGrow = 5;
-// const yearlyInterestRate = 6;
-
-// const futureValue = calculateFutureValue(currentPrincipal, monthlyContribution, yearsToGrow, yearlyInterestRate);
-// console.log(`Future Value: $${futureValue}`);
-
 
 
 
