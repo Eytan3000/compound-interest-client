@@ -5,7 +5,7 @@ import {
   Typography
 } from '@mui/joy';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import CompundForm from './components/form/CompundForm';
+import CompoundForm from './components/form/CompoundForm';
 //-------------------------------------------------
 //-------------------------------------------------
 
@@ -23,7 +23,7 @@ function App() {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <CompundForm />
+        <CompoundForm />
       </div>
       {/* <Typography>{`Total Interest: ${futureValue}`}</Typography> */}
       <Typography>{`How much you earned from compund interest`}</Typography>
