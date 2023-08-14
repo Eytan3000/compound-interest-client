@@ -1,6 +1,6 @@
 interface FutureValueResult {
-    futureValue: string;
-    totalInterest: string;
+    futureValue: number;
+    totalInterest: number;
   }
 
 export function calculateFutureValue(principal:number, monthlyContribution:number, years:number, yearlyInterestRate:number) :FutureValueResult {
@@ -22,11 +22,13 @@ export function calculateFutureValue(principal:number, monthlyContribution:numbe
    
     const depositeSum = (principal + (monthlyContribution*12*years));
     return {
-        futureValue: totalFutureValue.toFixed(), 
-        totalInterest: (totalFutureValue - depositeSum).toFixed(),
+        futureValue: totalFutureValue, 
+        totalInterest: (totalFutureValue - depositeSum),
     }
 }
 
-
+export function formatSums(sum:number):string{
+    return  sum.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 

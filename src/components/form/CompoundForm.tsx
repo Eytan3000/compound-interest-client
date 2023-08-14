@@ -7,7 +7,7 @@ import { calculateFutureValue } from '../../utils/helpers';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
 interface ParentProps {
-  sendDataToParent: (data: {futureValue:string, totalInterest:string}) => void;
+  sendDataToParent: (data: {futureValue:number, totalInterest:number}) => void;
 }
 
 const useStyles = makeStyles({
@@ -28,10 +28,10 @@ const useStyles = makeStyles({
 export default function CompoundForm({sendDataToParent}:ParentProps) {
   const classes = useStyles();
 
-  const [principal, setPrincipal] = useState<string>('');
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('');
-  const [years, setYears] = useState<string>('');
-  const [interestRate, setInterestRate] = useState<string>('');
+  const [principal, setPrincipal] = useState<string>('50000');
+  const [monthlyContribution, setMonthlyContribution] = useState<string>('1');
+  const [years, setYears] = useState<string>('30');
+  const [interestRate, setInterestRate] = useState<string>('7');
 
   // const [futureValue, setFutureValue] = useState<string>('');
   // const [totalInteres, setTotalInterest] = useState<string>('');
@@ -160,7 +160,7 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
             display="flex"
             justifyContent="flex-end"
             >
-            <Button color="danger" sx={{ marginX:'8px' }} onClick={handleReset}>Reset</Button>
+            <Button color="warning" sx={{ marginX:'8px' }} onClick={handleReset}>Reset</Button>
             <Button type="submit">Submit</Button>
           </Grid>
 
