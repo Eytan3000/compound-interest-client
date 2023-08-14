@@ -6,6 +6,7 @@ import CompoundForm from './components/form/CompoundForm';
 import { makeStyles } from '@mui/styles';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
+import { createTheme } from '@mui/material';
 //-------------------------------------------------
 interface ParentProps {
   sendDataToParent: (data: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles({
     margin: '20px auto', // Center the Sheet horizontally
   },
 });
+
 //-------------------------------------------------
 
 function App() {

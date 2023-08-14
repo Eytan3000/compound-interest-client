@@ -1,12 +1,14 @@
 import React, { ChangeEvent, useState } from 'react';
 import { Box, Card, Divider, Sheet, Stack, Typography } from '@mui/joy';
 import { makeStyles } from '@mui/styles';
+import BasicLineChart from './Chart';
+
 //-------------------------------------------------
 
 interface Props{
-    futureValue : number | string,
-    totalDeposits : number| string,
-    totalInteres : number| string
+    futureValue : number | string;
+    totalDeposits : number| string;
+    totalInteres : number| string;
 }
 
 const useStyles = makeStyles({
@@ -84,7 +86,10 @@ export default function SumsCard({
         </Sheet>
 
     {/* Chart */}
-    
+    <Box display={'flex'} justifyContent={'center'}>
+    <BasicLineChart />
+    <Typography level='body-xs'>x axis</Typography>
+    </Box>
       </Card>
   )
 }
