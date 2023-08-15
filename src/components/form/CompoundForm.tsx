@@ -7,7 +7,13 @@ import { calculateFutureValue } from '../../utils/helpers';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
 interface ParentProps {
-  sendDataToParent: (data: {futureValue:number, totalInterest:number}) => void;
+  sendDataToParent: (data: {
+    futureValue: number;
+    totalInterest: number;
+    futureValueArray:number[];
+    yearsNum:number;
+  }) => void;
+  setSubmited:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const useStyles = makeStyles({
@@ -25,54 +31,67 @@ const useStyles = makeStyles({
   },
 });
 //-----------------------------------------------------------
-export default function CompoundForm({sendDataToParent}:ParentProps) {
+export default function CompoundForm({ sendDataToParent, setSubmited }: ParentProps) {
   const classes = useStyles();
 
-  const [principal, setPrincipal] = useState<string>('50000');
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('1');
-  const [years, setYears] = useState<string>('30');
-  const [interestRate, setInterestRate] = useState<string>('7');
-
-  // const [futureValue, setFutureValue] = useState<string>('');
-  // const [totalInteres, setTotalInterest] = useState<string>('');
+  const [principal, setPrincipal] = useState<string>('');
+  const [monthlyContribution, setMonthlyContribution] = useState<string>('');
+  const [years, setYears] = useState<string>('');
+  const [interestRate, setInterestRate] = useState<string>('');
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const { futureValue, totalInterest  } = calculateFutureValue(
+    //destructuring returning elements from function that calculates the compound
+    const { futureValue, totalInterest, futureValueArray } = calculateFutureValue(
       +principal,
       +monthlyContribution,
       +years,
       +interestRate
     );
-
-    sendDataToParent({ futureValue, totalInterest  })
-
-
-    // setPrincipal('');
-    // setMonthlyContribution('');
-    // setYears('');
-    // setInterestRate('');
+      const yearsNum:number = +years;
+    sendDataToParent({ futureValue, totalInterest, futureValueArray, yearsNum  }); //send to parent
+    setSubmited(true); // sent from parent
   };
-  
-  const handleReset = () =>{
-        setPrincipal('');
+
+  const handleReset = () => {
+    setPrincipal('');
     setMonthlyContribution('');
     setYears('');
     setInterestRate('');
-  }
+  };
 
   const handleInputChange = (e: Event): void => {
+
     if (e.target.id === 'initial-investment') setPrincipal(e.target.value);
     if (e.target.id === 'monthly-contribution')
       setMonthlyContribution(e.target.value);
     if (e.target.id === 'years-to-grow') setYears(e.target.value);
     if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
   };
+  // const handleInputChange = (e: Event): void => {
+  //   if (e.target.id === 'initial-investment') {
+  //     const inputValue = e.target.value.replace(/,/g, ''); // Remove existing commas
+  //     const numericValue = parseFloat(inputValue);
+  //     if (!isNaN(numericValue)) {
+  //       setPrincipal(numericValue.toLocaleString()); // Format with commas
+  //     } else {
+  //       setPrincipal(inputValue); // If not a valid number, set as is
+  //     }
+  //   } else if (e.target.id === 'monthly-contribution') {
+  //           setMonthlyContribution(e.target.value); 
+  
+  //   }
+  //     if (e.target.id === 'years-to-grow') setYears(e.target.value);
+  //   if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
+  // };
+
   return (
     <Sheet variant="outlined" className={classes.mainSheet}>
       <form onSubmit={handleSubmit}>
         <Grid container direction={'column'}>
+
+          {/* Inputs */}
           <Grid
             className={classes.input}
             item
@@ -83,6 +102,7 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
               Initial Investment
             </Typography>
             <Input
+            // type='number'
               value={principal}
               id="initial-investment"
               placeholder="Example: 20,000"
@@ -92,7 +112,6 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
               onChange={handleInputChange}
             />
           </Grid>
-
           <Grid
             className={classes.input}
             item
@@ -112,7 +131,6 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
               onChange={handleInputChange}
             />
           </Grid>
-
           <Grid
             className={classes.input}
             item
@@ -132,7 +150,6 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
               onChange={handleInputChange}
             />
           </Grid>
-
           <Grid
             className={classes.input}
             item
@@ -153,17 +170,21 @@ export default function CompoundForm({sendDataToParent}:ParentProps) {
             />
           </Grid>
 
+          {/* Buttons */}
           <Grid
             item
             xs={12}
             padding={2}
             display="flex"
-            justifyContent="flex-end"
-            >
-            <Button color="warning" sx={{ marginX:'8px' }} onClick={handleReset}>Reset</Button>
+            justifyContent="flex-end">
+            <Button
+              color="warning"
+              sx={{ marginX: '8px' }}
+              onClick={handleReset}>
+              Reset
+            </Button>
             <Button type="submit">Submit</Button>
           </Grid>
-
         </Grid>
       </form>
     </Sheet>

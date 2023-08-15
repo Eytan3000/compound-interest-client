@@ -7,8 +7,8 @@ interface props {
 }
 
 export default function BasicLineChart({
-  dataX = [1, 2, 3, 5, 8, 10],
-  dataY = [2, 5.5, 2, 8.5, 1.5, 5]
+  dataX,
+  dataY
 }:props) {
 
   return (
@@ -22,8 +22,8 @@ export default function BasicLineChart({
  
         },
       ]}
-      width={500}
-      height={300}
+      width={800}
+      height={500}
     />
   );
 }

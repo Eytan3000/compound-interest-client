@@ -1,47 +1,37 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { Box, Card, Divider, Sheet, Stack, Typography } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import CompoundForm from './components/form/CompoundForm';
-import { makeStyles } from '@mui/styles';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
-import { createTheme } from '@mui/material';
 //-------------------------------------------------
 interface ParentProps {
   sendDataToParent: (data: {
     futureValue: number;
     totalInterest: number;
+    futureValueArray: number[];
   }) => void;
 }
-
-const useStyles = makeStyles({
-  resultSheet: {
-    width: '600px',
-    margin: '0 auto', // Center the Sheet horizontally
-    borderRadius: 10,
-  },
-  card: {
-    width: '800px',
-    // margin: '0 auto', // Center the Sheet horizontally
-    margin: '20px auto', // Center the Sheet horizontally
-  },
-});
-
 //-------------------------------------------------
 
 function App() {
   const [futureValue, setFutureValue] = useState<number | string>('');
   const [totalInteres, setTotalInterest] = useState<number | string>('');
   const [totalDeposits, setTotalDeposits] = useState<number | string>('');
+  const [futureValueArray, setfutureValueArray] = useState<number[]>([]);
+  const [years, setYears] = useState<number>(0);
 
-  const classes = useStyles();
+  const [submited, setSubmited] = useState<boolean>(false);
+
+
   function handleFormData(data: {
     futureValue: number;
     totalInterest: number;
+    futureValueArray: number[];
+    yearsNum:number;
   }): void {
-    const { futureValue, totalInterest } = data;
-    // const formattedFutureValue = futureValue.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ','); //removing 3rd digit after dcimal point
+    const { futureValue, totalInterest, futureValueArray, yearsNum } = data;
 
     const formattedFutureValue = formatSums(futureValue);
     const formattedTotalInterest = formatSums(totalInterest);
@@ -50,6 +40,8 @@ function App() {
     setFutureValue(formattedFutureValue);
     setTotalInterest(formattedTotalInterest);
     setTotalDeposits(formatedTotalDeposits);
+    setfutureValueArray(futureValueArray);
+    setYears(yearsNum);
   }
 
   return (
@@ -64,13 +56,18 @@ function App() {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <CompoundForm sendDataToParent={handleFormData} />
+        <CompoundForm sendDataToParent={handleFormData} setSubmited={setSubmited}/>
       </div>
 
-      <SumsCard futureValue={futureValue}
-    totalDeposits={totalDeposits}
-    totalInteres={totalInteres}
-    />
+      {submited && (
+        <SumsCard
+          futureValue={futureValue}
+          totalDeposits={totalDeposits}
+          totalInteres={totalInteres}
+          futureValueArray={futureValueArray}
+          years={years}
+        />
+      )}
     </>
   );
 }
