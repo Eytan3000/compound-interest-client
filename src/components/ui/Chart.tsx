@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LineChart } from '@mui/x-charts/LineChart';
+// import { LineChart } from '@mui/x-charts/LineChart';
 
 interface props {
   dataX?: number[];
@@ -11,19 +11,19 @@ export default function BasicLineChart({
   dataY
 }:props) {
 
-  return (
-    <LineChart
-      xAxis={[{ data: dataX }]}
-      series={[
-        {
-          data: dataY,
-          curve:'linear',
-          color: '#3498DB',
+  // return (
+  //   <LineChart
+  //     xAxis={[{ data: dataX }]}
+  //     series={[
+  //       {
+  //         data: dataY,
+  //         curve:'linear',
+  //         color: '#3498DB',
  
-        },
-      ]}
-      width={800}
-      height={500}
-    />
-  );
+  //       },
+  //     ]}
+  //     width={800}
+  //     height={500}
+  //   />
+  // );
 }

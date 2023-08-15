@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Input, Sheet, Typography } from '@mui/joy';
-import { makeStyles } from '@mui/styles';
 import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
 
@@ -16,23 +15,8 @@ interface ParentProps {
   setSubmited:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const useStyles = makeStyles({
-  FormComponent2_input: {
-    width: '200px',
-    marginRight: 20,
-  },
-  mainSheet: {
-    width: '600px',
-    margin: '0 auto', // Center the Sheet horizontally
-    borderRadius: 10,
-  },
-  input: {
-    width: '600px',
-  },
-});
 //-----------------------------------------------------------
 export default function CompoundForm({ sendDataToParent, setSubmited }: ParentProps) {
-  const classes = useStyles();
 
   const [principal, setPrincipal] = useState<string>('');
   const [monthlyContribution, setMonthlyContribution] = useState<string>('');
@@ -87,13 +71,17 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
   // };
 
   return (
-    <Sheet variant="outlined" className={classes.mainSheet}>
+    <Sheet variant="outlined" sx={{
+      width: '600px',
+      margin: '0 auto',
+      borderRadius: 10,
+}}>
       <form onSubmit={handleSubmit}>
         <Grid container direction={'column'}>
 
           {/* Inputs */}
           <Grid
-            className={classes.input}
+            width={'600px'}
             item
             display={'flex'}
             justifyContent={'space-between'}
@@ -103,17 +91,17 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
             </Typography>
             <Input
             // type='number'
+            sx={{marginRight:2}}
               value={principal}
               id="initial-investment"
               placeholder="Example: 20,000"
               variant="outlined"
               color="primary"
-              className={classes.FormComponent2_input}
               onChange={handleInputChange}
             />
           </Grid>
           <Grid
-            className={classes.input}
+            width={'600px'}
             item
             display={'flex'}
             justifyContent={'space-between'}
@@ -127,12 +115,12 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               placeholder="Example: 1200"
               variant="outlined"
               color="primary"
-              className={classes.FormComponent2_input}
+              sx={{marginRight:2}}
               onChange={handleInputChange}
             />
           </Grid>
           <Grid
-            className={classes.input}
+            width={'600px'}
             item
             display={'flex'}
             justifyContent={'space-between'}
@@ -146,12 +134,11 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               placeholder="Example: 15"
               variant="outlined"
               color="primary"
-              className={classes.FormComponent2_input}
-              onChange={handleInputChange}
+              sx={{marginRight:2}}              onChange={handleInputChange}
             />
           </Grid>
           <Grid
-            className={classes.input}
+            width={'600px'}
             item
             display={'flex'}
             justifyContent={'space-between'}
@@ -165,8 +152,7 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               placeholder="Example: 7"
               variant="outlined"
               color="primary"
-              className={classes.FormComponent2_input}
-              onChange={handleInputChange}
+              sx={{marginRight:2}}              onChange={handleInputChange}
             />
           </Grid>
 

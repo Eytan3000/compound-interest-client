@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Card, Divider, Sheet, Stack, Typography } from '@mui/joy';
-// import { makeStyles } from '@mui/styles';
 import BasicLineChart from './Chart';
 //-------------------------------------------------
 interface Props {
@@ -10,18 +9,6 @@ interface Props {
   futureValueArray: number[];
   years: number;
 }
-
-// const useStyles = makeStyles({
-//   // resultSheet: {
-//   //   width: '600px',
-//   //   margin: '0 auto', // Center the Sheet horizontally
-//   //   borderRadius: 10,
-//   // },
-//   card: {
-//     width: '800px',
-//     margin: '20px auto', // Center the Sheet horizontally
-//   },
-// });
 
 function yearsToDataX(years: number): number[] {
   let yearsArr = [];
@@ -98,13 +85,13 @@ export default function SumsCard({
 
       {/* Chart */}
       {
-        <Box display={'flex'} justifyContent={'center'}>
-          <BasicLineChart
-            dataX={yearsToDataX(years)}
-            dataY={futureValueArray}
-          />
-          {/* <Typography level="body-xs">x axis</Typography> */}
-        </Box>
+        // <Box display={'flex'} justifyContent={'center'}>
+        //   <BasicLineChart
+        //     dataX={yearsToDataX(years)}
+        //     dataY={futureValueArray}
+        //   />
+        //   {/* <Typography level="body-xs">x axis</Typography> */}
+        // </Box>
       }
     </Card>
   );
