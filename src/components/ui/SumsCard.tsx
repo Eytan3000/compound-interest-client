@@ -85,13 +85,13 @@ export default function SumsCard({
 
       {/* Chart */}
       {
-        // <Box display={'flex'} justifyContent={'center'}>
-        //   <BasicLineChart
-        //     dataX={yearsToDataX(years)}
-        //     dataY={futureValueArray}
-        //   />
-        //   {/* <Typography level="body-xs">x axis</Typography> */}
-        // </Box>
+        <Box display={'flex'} justifyContent={'center'}>
+          <BasicLineChart
+            dataX={yearsToDataX(years)}
+            dataY={futureValueArray}
+          />
+          {/* <Typography level="body-xs">x axis</Typography> */}
+        </Box>
       }
     </Card>
   );

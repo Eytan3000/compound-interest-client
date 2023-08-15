@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-import { Button, Input, Sheet, Typography } from '@mui/joy';
+import {
+  Button,
+  FormHelperText,
+  Input,
+  Sheet,
+  Typography,
+  FormControl,
+  Alert,
+  IconButton,
+} from '@mui/joy';
 import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
+import WarningIcon from '@mui/icons-material/Warning';
+// import FormattedInputs from './FormatedInputs';
 
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
@@ -9,32 +20,54 @@ interface ParentProps {
   sendDataToParent: (data: {
     futureValue: number;
     totalInterest: number;
-    futureValueArray:number[];
-    yearsNum:number;
+    futureValueArray: number[];
+    yearsNum: number;
   }) => void;
-  setSubmited:React.Dispatch<React.SetStateAction<boolean>>;
+  setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 //-----------------------------------------------------------
-export default function CompoundForm({ sendDataToParent, setSubmited }: ParentProps) {
-
+export default function CompoundForm({
+  sendDataToParent,
+  setSubmited,
+}: ParentProps) {
   const [principal, setPrincipal] = useState<string>('');
   const [monthlyContribution, setMonthlyContribution] = useState<string>('');
   const [years, setYears] = useState<string>('');
   const [interestRate, setInterestRate] = useState<string>('');
 
+  const [emptyField, setEmptyField] = useState<boolean>(false);
+
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
+    if (
+      principal === '' ||
+      monthlyContribution === '' ||
+      years === '' ||
+      interestRate === ''
+    ) {
+      setEmptyField(true);
+      return;
+    }
+
+    setEmptyField(false);
+
     //destructuring returning elements from function that calculates the compound
-    const { futureValue, totalInterest, futureValueArray } = calculateFutureValue(
-      +principal,
-      +monthlyContribution,
-      +years,
-      +interestRate
-    );
-      const yearsNum:number = +years;
-    sendDataToParent({ futureValue, totalInterest, futureValueArray, yearsNum  }); //send to parent
+    const { futureValue, totalInterest, futureValueArray } =
+      calculateFutureValue(
+        +principal,
+        +monthlyContribution,
+        +years,
+        +interestRate
+      );
+    const yearsNum: number = +years;
+    sendDataToParent({
+      futureValue,
+      totalInterest,
+      futureValueArray,
+      yearsNum,
+    }); //send to parent
     setSubmited(true); // sent from parent
   };
 
@@ -46,8 +79,10 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
   };
 
   const handleInputChange = (e: Event): void => {
-
-    if (e.target.id === 'initial-investment') setPrincipal(e.target.value);
+    setEmptyField(false);
+    if (e.target.id === 'initial-investment') {
+      setPrincipal(e.target.value);
+    }
     if (e.target.id === 'monthly-contribution')
       setMonthlyContribution(e.target.value);
     if (e.target.id === 'years-to-grow') setYears(e.target.value);
@@ -63,23 +98,25 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
   //       setPrincipal(inputValue); // If not a valid number, set as is
   //     }
   //   } else if (e.target.id === 'monthly-contribution') {
-  //           setMonthlyContribution(e.target.value); 
-  
+  //           setMonthlyContribution(e.target.value);
+
   //   }
   //     if (e.target.id === 'years-to-grow') setYears(e.target.value);
   //   if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
   // };
 
   return (
-    <Sheet variant="outlined" sx={{
-      width: '600px',
-      margin: '0 auto',
-      borderRadius: 10,
-}}>
+    <Sheet
+      variant="outlined"
+      sx={{
+        width: '600px',
+        margin: '0 auto',
+        borderRadius: 10,
+      }}>
       <form onSubmit={handleSubmit}>
         <Grid container direction={'column'}>
-
           {/* Inputs */}
+
           <Grid
             width={'600px'}
             item
@@ -89,9 +126,10 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
             <Typography marginY={1} marginX={4}>
               Initial Investment
             </Typography>
+
             <Input
-            // type='number'
-            sx={{marginRight:2}}
+              type="number"
+              sx={{ marginRight: 2 }}
               value={principal}
               id="initial-investment"
               placeholder="Example: 20,000"
@@ -100,6 +138,7 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               onChange={handleInputChange}
             />
           </Grid>
+
           <Grid
             width={'600px'}
             item
@@ -110,12 +149,13 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               Monthly Contribution
             </Typography>
             <Input
+              type="number"
               value={monthlyContribution}
               id="monthly-contribution"
               placeholder="Example: 1200"
               variant="outlined"
               color="primary"
-              sx={{marginRight:2}}
+              sx={{ marginRight: 2 }}
               onChange={handleInputChange}
             />
           </Grid>
@@ -129,12 +169,14 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               Years to Grow
             </Typography>
             <Input
+              type="number"
               value={years}
               id="years-to-grow"
               placeholder="Example: 15"
               variant="outlined"
               color="primary"
-              sx={{marginRight:2}}              onChange={handleInputChange}
+              sx={{ marginRight: 2 }}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid
@@ -147,12 +189,14 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
               Estimated Interest Rate (%)
             </Typography>
             <Input
+              type="number"
               value={interestRate}
               id="interest-rate"
               placeholder="Example: 7"
               variant="outlined"
               color="primary"
-              sx={{marginRight:2}}              onChange={handleInputChange}
+              sx={{ marginRight: 2 }}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -171,6 +215,16 @@ export default function CompoundForm({ sendDataToParent, setSubmited }: ParentPr
             </Button>
             <Button type="submit">Submit</Button>
           </Grid>
+
+          {emptyField && (
+            <Alert
+              sx={{ margin: 3 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              No empty fields allowed{' '}
+            </Alert>
+          )}
         </Grid>
       </form>
     </Sheet>
