@@ -219,7 +219,7 @@ export default function CompoundForm({
               startDecorator={<WarningIcon />}
               variant="soft"
               color="danger">
-              No empty fields allowed{' '}
+              No empty fields are allowed{' '}
             </Alert>
           )}
         </Grid>
