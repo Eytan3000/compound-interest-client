@@ -6,13 +6,13 @@ import CompoundForm from './components/form/CompoundForm';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
 //-------------------------------------------------
-interface ParentProps {
-  sendDataToParent: (data: {
-    futureValue: number;
-    totalInterest: number;
-    futureValueArray: number[];
-  }) => void;
-}
+// interface ParentProps {
+//   sendDataToParent: (data: {
+//     futureValue: number;
+//     totalInterest: number;
+//     futureValueArray: number[];
+//   }) => void;
+// }
 //-------------------------------------------------
 
 function App() {
