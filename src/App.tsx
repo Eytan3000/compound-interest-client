@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Box, Typography } from '@mui/joy';
+import { Box, Container, Typography } from '@mui/joy';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import CompoundForm from './components/form/CompoundForm';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
+import axios from 'axios';
+import News from './news/News';
+import HpArticle from './news/HpArticle';
 //-------------------------------------------------
 type FormData = {
   futureValue: number;
@@ -23,7 +26,6 @@ function App() {
   const [years, setYears] = useState<number>(0);
 
   const [submited, setSubmited] = useState<boolean>(false);
-
 
   function handleFormData(data: FormData): void {
     const { futureValue, totalInterest, futureValueArray, yearsNum } = data;
@@ -63,6 +65,9 @@ function App() {
           years={years}
         />
       )}
+      <News />
+      <HpArticle />
+      
     </>
   );
 }
