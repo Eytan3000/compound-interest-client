@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Card, Sheet, Typography } from '@mui/joy';
+import { Box, Button, Card, Sheet, Skeleton, Typography } from '@mui/joy';
 import Link from '@mui/joy/Link';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { yahooFinanceLogo } from '../utils/links';
+import { env } from 'process';
 //---------------------------------------
 type RequestOptions = {
   method: string;
@@ -14,7 +15,7 @@ type RequestOptions = {
   };
   headers: {
     'content-type': string;
-    'X-RapidAPI-Key': string;
+    'X-RapidAPI-Key': string | undefined;
     'X-RapidAPI-Host': string;
   };
   data: string;
@@ -41,8 +42,7 @@ interface NewsItem {
   id: string;
 }
 
-const apiKey = '6f1fd04672msh6ecdfeba8d52940p116d0djsn4c940f805ced';
-
+const apiKey = process.env.REACT_APP_YAHOO_API_KEY;
 const options = {
   method: 'POST',
   url: 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/news/v2/list',
@@ -60,52 +60,55 @@ const options = {
 //---------------------------------------
 export default function News() {
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
-  const [flexBasis, setFlexBasis] = React.useState(200);
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
+  
     (async function news(options: RequestOptions) {
       try {
+        setLoading(true);
         const response = await axios.request(options);
-        // console.log((response.data.data.main.stream)[0].content.title);
-        // console.log(response.data.data.main.stream);
-        // console.log(response.data.data.main.stream);
-        setNewsData(response.data.data.main.stream); //newsArray
+        const data = response.data.data.main.stream;
+        setNewsData(data); //newsArray
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     })(options);
   }, []);
   console.log(newsData);
-
-  function handleReadClick() {
-    // navigate
-    console.log('navigate');
-  }
+  console.log(loading);
 
   return (
-    // <Container sx={{marginTop:10, background:'red'}}>
     <Sheet variant="outlined" sx={{ marginTop: 5, padding: 5 }}>
-
-      
       <Typography sx={{ textAlign: 'center' }} level="h3">
         Today's highlights
       </Typography>
 
       <Box display={'flex'} justifyContent={'center'}>
-        {newsData.map((newsItem, index) => {
+      
+        {loading ? 
+        newsData.map((newsItem, index) => {
           if (index < 3) {
+        return (
+          <Card
+                sx={{ width: 300, margin: 4, height: 350 }}
+                key={index}
+                variant="outlined">
+        <Skeleton variant="rectangular"  width={'100%'} height={'100%'}/>
+        </Card>
+        )
+          }})
+        : newsData.map((newsItem, index) => {
+          if (newsItem.content.thumbnail && index < 3) { //sometimes there's no thumbnail, so checking if there's one.
             return (
               <Card
                 sx={{ width: 300, margin: 4, height: '100%' }}
                 key={index}
                 variant="outlined">
-                {/* <img
-                  src={newsItem.content.thumbnail.resolutions[0].url}
-                  alt="news thumbnail"
-                /> */}
-
-   <AspectRatio
+                <AspectRatio
                   sx={{
-                    // flexBasis: flexBasis ? `${flexBasis}px` : undefined,
                     flexBasis: '200px',
                     overflow: 'auto',
                   }}>
@@ -115,8 +118,7 @@ export default function News() {
                   />
                 </AspectRatio>
 
-
-                <Typography level="body-xs" marginTop='-40px'>
+                <Typography level="body-xs" marginTop="-40px">
                   {newsItem.content.provider.displayName}
                 </Typography>
                 <Typography level="title-lg">
@@ -129,18 +131,12 @@ export default function News() {
                     {newsItem.content.title}
                   </Link>
                 </Typography>
-                {/* <Typography level="body-sm">
-                  {newsItem.content.title}
-                </Typography> */}
-
-                {/* <Button variant="outlined">Keep reading</Button> */}
               </Card>
             );
           }
         })}
-        <img height={20} alt='yahoo finance logo' src={yahooFinanceLogo} />
+        <img height={20} alt="yahoo finance logo" src={yahooFinanceLogo} />
       </Box>
     </Sheet>
-    // </Container>
   );
 }
