@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Input,
-  Sheet,
-  Typography,
-  Alert,
-} from '@mui/joy';
-import { Grid } from '@mui/material';
+import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
+//  import Grid from '@mui/system/Unstable_Grid';
+// import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
 // import FormattedInputs from './FormatedInputs';
@@ -22,7 +17,6 @@ interface ParentProps {
   }) => void;
   setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 //-----------------------------------------------------------
 export default function CompoundForm({
   sendDataToParent,
@@ -34,6 +28,21 @@ export default function CompoundForm({
   const [interestRate, setInterestRate] = useState<string>('');
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
+
+  const sheetStyles = (theme: Theme) => ({
+    padding:3,
+    margin: '0 auto',
+    borderRadius: 10,
+    [theme.breakpoints.up('xs')]: {
+      width: '300px',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '450px',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '600px',
+    },
+  });
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -73,6 +82,7 @@ export default function CompoundForm({
     setMonthlyContribution('');
     setYears('');
     setInterestRate('');
+    setEmptyField(false);
   };
 
   const handleInputChange = (e: Event): void => {
@@ -103,127 +113,108 @@ export default function CompoundForm({
   // };
 
   return (
-    <Sheet
-      variant="outlined"
-      sx={{
-        width: '600px',
-        margin: '0 auto',
-        borderRadius: 10,
-      }}>
-      <form onSubmit={handleSubmit}>
-        <Grid container direction={'column'}>
-          {/* Inputs */}
+    <>
 
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Initial Investment
-            </Typography>
 
-            <Input
-              type="number"
-              sx={{ marginRight: 2 }}
-              value={principal}
-              id="initial-investment"
-              placeholder="Example: 20,000"
-              variant="outlined"
-              color="primary"
-              onChange={handleInputChange}
-            />
-          </Grid>
+      <Sheet variant="outlined" sx={sheetStyles}>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2} columns={16} sx={{ flexGrow: 1 }} rowSpacing={{xs:2, md:5}}>
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Initial Investment
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                sx={{ marginRight: 2, height:'100%' }}
+                value={principal}
+                id="initial-investment"
+                placeholder="Example: 20,000"
+                variant="outlined"
+                color="primary"
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Monthly Contribution
-            </Typography>
-            <Input
-              type="number"
-              value={monthlyContribution}
-              id="monthly-contribution"
-              placeholder="Example: 1200"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Years to Grow
-            </Typography>
-            <Input
-              type="number"
-              value={years}
-              id="years-to-grow"
-              placeholder="Example: 15"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Estimated Interest Rate (%)
-            </Typography>
-            <Input
-              type="number"
-              value={interestRate}
-              id="interest-rate"
-              placeholder="Example: 7"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Monthly Contribution
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={monthlyContribution}
+                id="monthly-contribution"
+                placeholder="Example: 1200"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height:'100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-          {/* Buttons */}
-          <Grid
-            item
-            xs={12}
-            padding={2}
-            display="flex"
-            justifyContent="flex-end">
-            <Button
-              color="warning"
-              sx={{ marginX: '8px' }}
-              onClick={handleReset}>
-              Reset
-            </Button>
-            <Button type="submit">Submit</Button>
-          </Grid>
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Years to Grow
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={years}
+                id="years-to-grow"
+                placeholder="Example: 15"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height:'100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-          {emptyField && (
-            <Alert
-              sx={{ margin: 3 }}
-              startDecorator={<WarningIcon />}
-              variant="soft"
-              color="danger">
-              No empty fields are allowed{' '}
-            </Alert>
-          )}
-        </Grid>
-      </form>
-    </Sheet>
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Estimated Interest Rate (%)
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={interestRate}
+                id="interest-rate"
+                placeholder="Example: 7"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height:'100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            {/* Buttons */}
+            <Grid xs={10} mt={1.5}></Grid>
+            <Grid xs={6} padding={2} display="flex" justifyContent="flex-end">
+              <Button
+                color="warning"
+                sx={{ marginX: '8px' }}
+                onClick={handleReset}>
+                Reset
+              </Button>
+              <Button type="submit">Submit</Button>
+            
+
+            </Grid>
+          </Grid>
+            {emptyField && (
+              <Alert
+                sx={{ marginTop: 4 }}
+                startDecorator={<WarningIcon />}
+                variant="soft"
+                color="danger">
+                No empty fields are allowed{' '}
+              </Alert>
+            )}
+        </form>
+      </Sheet>
+    </>
   );
 }

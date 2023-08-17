@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, Divider, Sheet, Stack, Typography } from '@mui/joy';
+import { Box, Card, Divider, Sheet, Stack, Typography,Theme } from '@mui/joy';
 import BasicLineChart from './Chart';
 //-------------------------------------------------
 interface Props {
@@ -26,9 +26,18 @@ export default function SumsCard({
   years,
 }: Props) {
 
+  // const sumsCardStyles = (theme:Theme) => ({
+  //   [theme.breakpoints.up('xs')]: {
+  //     width: '200px', margin: '20px auto' 
+  //   },
+  //   [theme.breakpoints.up('lg')]: {
+  //     width: '800px', margin: '20px auto' 
+  //   },
+  // })
+
   return (
     <Card
-      sx={{ width: '800px', margin: '20px auto' }}
+      sx={{width: '800px', margin: '20px auto'}}
       size="lg"
       variant="outlined">
       {/* Sums */}

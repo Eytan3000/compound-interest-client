@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Box, Container, Typography } from '@mui/joy';
-import ResponsiveAppBar from './components/ResponsiveAppBar';
+import { Box, Container, Theme, Typography, styled } from '@mui/joy';
+import ResponsiveAppBar from './components/ui/ResponsiveAppBar';
 import CompoundForm from './components/form/CompoundForm';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
-import axios from 'axios';
 import News from './news/News';
 import HpArticle from './news/HpArticle';
+
 //-------------------------------------------------
 type FormData = {
   futureValue: number;
@@ -15,6 +15,7 @@ type FormData = {
   futureValueArray: number[];
   yearsNum: number;
 }
+
 
 //-------------------------------------------------
 
@@ -26,6 +27,26 @@ function App() {
   const [years, setYears] = useState<number>(0);
 
   const [submited, setSubmited] = useState<boolean>(false);
+
+const titleStyles = (theme:Theme) => ({
+  [theme.breakpoints.up('xs')]: {
+    fontSize: '24px', // Adjust the font size for small to medium screens
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: '24px', // Font size for medium to large screens
+  },
+  [theme.breakpoints.up('lg')]: {
+    fontSize: '36px', // Font size for large screens
+  },
+})
+const titleBoxStyles = (theme:Theme) => ({
+  [theme.breakpoints.up('xs')]: {
+    margin:3,
+  },
+  [theme.breakpoints.up('lg')]: {
+    margin:10,
+  },
+})
 
   function handleFormData(data: FormData): void {
     const { futureValue, totalInterest, futureValueArray, yearsNum } = data;
@@ -44,8 +65,10 @@ function App() {
   return (
     <>
       <ResponsiveAppBar />
-      <Box display={'flex'} justifyContent={'center'} margin={10}>
-        <Typography level="h1">Compound Interest Calculator</Typography>
+      <Box display={'flex'} justifyContent={'center'} textAlign={'center'} sx={titleBoxStyles}>
+        <Typography level="h1" 
+              sx={titleStyles}
+        >Compound Interest Calculator</Typography>
       </Box>
       <div
         style={{
@@ -67,7 +90,6 @@ function App() {
       )}
       <News />
       <HpArticle />
-      
     </>
   );
 }

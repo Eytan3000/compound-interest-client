@@ -1,25 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, Sheet, Skeleton, Typography } from '@mui/joy';
+import { Box, Card, Sheet, Typography } from '@mui/joy';
 import Link from '@mui/joy/Link';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { yahooFinanceLogo } from '../utils/links';
-import { yahooNewsApi } from '../utils/api';
 import axios from 'axios';
 //---------------------------------------
-// type RequestOptions = {
-//   method: string;
-//   url: string;
-//   params: {
-//     region: string;
-//     snippetCount: string;
-//   };
-//   headers: {
-//     'content-type': string;
-//     'X-RapidAPI-Key': string | undefined;
-//     'X-RapidAPI-Host': string;
-//   };
-//   data: string;
-// };
 
 interface NewsItem {
   content: {
@@ -45,20 +30,23 @@ interface NewsItem {
 //---------------------------------------
 export default function News() {
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   //AxiosResponse<any, any>
   useEffect(() => {
     (async function () {
+      setLoading(true);
       try {
-        setLoading(true);
         // Real API:
         // const response = await yahooNewsApi();
         // const data = response.data.data.main.stream;
         // setNewsData(data); //newsArray
 
         // json api
-        const response = await axios.get('/data/YahooFinance.json');
+        setTimeout(async()=>{
+          const response = await axios.get('/data/YahooFinance.json');
         setNewsData(response.data);
+      },1500)
+      console.log('api loads')
 
       } catch (error) {
         console.error(error);
@@ -67,8 +55,7 @@ export default function News() {
       }
     })();
   }, []);
-  console.log(newsData);
-  console.log(loading);
+
 
   return (
     <Sheet variant="outlined" sx={{ marginTop: 5, padding: 5 }}>
