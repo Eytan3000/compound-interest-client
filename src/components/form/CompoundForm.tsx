@@ -4,7 +4,6 @@ import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
 // import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
-// import FormattedInputs from './FormatedInputs';
 
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
@@ -22,10 +21,10 @@ export default function CompoundForm({
   sendDataToParent,
   setSubmited,
 }: ParentProps) {
-  const [principal, setPrincipal] = useState<string>('');
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('');
-  const [years, setYears] = useState<string>('');
-  const [interestRate, setInterestRate] = useState<string>('');
+  const [principal, setPrincipal] = useState<string>('250000');
+  const [monthlyContribution, setMonthlyContribution] = useState<string>('3500');
+  const [years, setYears] = useState<string>('35');
+  const [interestRate, setInterestRate] = useState<string>('6');
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
 

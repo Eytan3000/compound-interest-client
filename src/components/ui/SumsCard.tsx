@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, Divider, Sheet, Stack, Typography,Theme } from '@mui/joy';
+import { Box, Card, Divider, Sheet, Stack, Typography, Theme } from '@mui/joy';
 import BasicLineChart from './Chart';
 //-------------------------------------------------
 interface Props {
@@ -34,16 +34,26 @@ export default function SumsCard({
   //     width: '800px', margin: '20px auto' 
   //   },
   // })
+  const sumsCardStyles = (theme:Theme) => ({
+    [theme.breakpoints.up('xs')]: {
+      flexDirection:"column",
+          alignItems:"center"  
+    },
+    [theme.breakpoints.up('lg')]: {
+      justifyContent:"space-between"
+    },
+  })
 
   return (
     <Card
-      sx={{width: '800px', margin: '20px auto'}}
+      sx={{maxWidth: '800px', margin: '20px auto'}}
       size="lg"
       variant="outlined">
       {/* Sums */}
       <Sheet
         color="primary"
         variant="soft"
+        
         sx={{ margin: 1, padding: 3, borderRadius: 8 }}>
         <Box
           width="30%"
@@ -61,14 +71,26 @@ export default function SumsCard({
             </Typography>
           </Stack>
         </Box>
-        <Box
+
+
+
+
+        <Stack
+        direction={{ xs: 'column', sm: 'row' }}
           marginTop={2}
           display="flex"
           justifyContent="space-between"
+
+          // sx={sumsCardStyles}
+          flexDirection={"column"} 
+          alignItems="center" 
+
+
+          
           textAlign={'center'}
           px={10}>
           <Box width="30%">
-            <Stack spacing={1}>
+             {/* <Stack spacing={1}> */}
               <Typography level="body-md" textColor="inherit">
                 Total Deposits
               </Typography>
@@ -76,10 +98,10 @@ export default function SumsCard({
               <Typography level="h4" textColor="inherit">
                 ${totalDeposits.toLocaleString()}
               </Typography>
-            </Stack>
+            {/* </Stack> */}
           </Box>
-          <Box width="30%">
-            <Stack spacing={1}>
+          <Box  width="30%">
+            {/* <Stack spacing={1}> */}
               <Typography level="body-md" textColor="inherit">
                 Total Interest
               </Typography>
@@ -87,9 +109,9 @@ export default function SumsCard({
               <Typography level="h4" textColor="inherit">
                 ${totalInteres.toLocaleString()}
               </Typography>
-            </Stack>
+            {/* </Stack> */}
           </Box>
-        </Box>
+        </Stack>
       </Sheet>
 
       {/* Chart */}
