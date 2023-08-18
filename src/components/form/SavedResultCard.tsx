@@ -21,8 +21,8 @@ export default function SavedResultCard() {
       {/* <div style={{ maxHeight: '100%', overflow: 'hidden', }}> */}
       <div style={{ flex: 1, overflow: 'auto' }}>
 
-{results.reverse().map((item)=>{
-    return (<Card variant='outlined' sx={{marginY:2}}>FV: ${item.toLocaleString()}</Card>);
+{results.reverse().map((item, index)=>{
+    return (<Card key={index} variant='outlined' sx={{marginY:2}}>FV: ${item.toLocaleString()}</Card>);
 })}
     
       </div>

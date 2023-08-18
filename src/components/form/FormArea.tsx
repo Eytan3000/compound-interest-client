@@ -1,13 +1,24 @@
 import { Box } from '@mui/joy';
-import React from 'react';
+import React, { useState } from 'react';
 import SavedResultCard from './SavedResultCard';
 import CompoundForm from './CompoundForm';
 
-// export default function FormArea({ handleFormData, setSubmited }) {
-export default function FormArea() {
+interface Props {
+  handleFormData: (data: {
+    futureValue: number;
+    totalInterest: number;
+    futureValueArray: number[];
+    yearsNum: number;
+  }) => void;
+  setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
+  isMobile:boolean;
+}
+
+export default function FormArea({ handleFormData, setSubmited, isMobile }: Props) {
+  
   return (
     <Box display={'flex'} justifyContent={'center'}>
-      <SavedResultCard />
+     {!isMobile && <SavedResultCard />} 
 
       <div
         style={{
@@ -16,19 +27,19 @@ export default function FormArea() {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {/* <CompoundForm
-        //   sendDataToParent={handleFormData}
-        //   setSubmited={setSubmited}
-        /> */}
+        <CompoundForm
+          sendDataToParent={handleFormData}
+          setSubmited={setSubmited}
+        />
       </div>
 
-      <div // just an empty dic to center the form
+      {!isMobile &&  <div // just an empty dic to center the form
         style={{
           marginLeft: '20px',
           maxHeight: '400px',
           width: '200px',
         }}
-      />
+      />}
     </Box>
   );
 }

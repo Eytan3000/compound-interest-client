@@ -8,7 +8,8 @@ import SumsCard from './components/ui/SumsCard';
 import News from './news/News';
 import HpArticle from './news/HpArticle';
 import SavedResultCard from './components/form/SavedResultCard';
-// import FormArea from './components/form/formArea';
+import FormArea from './components/form/FormArea';
+import Modal from '@mui/material/Modal';
 
 //-------------------------------------------------
 type FormData = {
@@ -28,8 +29,20 @@ function App() {
   const [years, setYears] = useState<number>(0);
 
   const [submited, setSubmited] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
-  // const [isMobile, setIsMobile] = useState(false);
+  //get the size of screen
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1200); // Adjust the breakpoint as needed. xs, extra-small: 0px. sm, small: 600px. md, medium: 900px. lg, large: 1200px.
+    };
+    checkScreenSize(); // Initial check
+    window.addEventListener('resize', checkScreenSize);
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
 
   const titleStyles = (theme: Theme) => ({
     [theme.breakpoints.up('xs')]: {
@@ -64,10 +77,21 @@ function App() {
     setfutureValueArray(futureValueArray);
     setYears(yearsNum);
   }
-
+  const handleOpen = () => setMenuOpen(true);
+  const handleClose = () => setMenuOpen(false);
   return (
     <>
-      <ResponsiveAppBar />
+      <ResponsiveAppBar isMobile={isMobile} handleOpen={handleOpen} />
+
+      <Modal
+        open={menuOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description">
+        <Box display={'flex'} justifyContent={'center'} mt={4}>
+          <SavedResultCard />
+        </Box>
+      </Modal>
 
       <Box
         display={'flex'}
@@ -79,32 +103,11 @@ function App() {
         </Typography>
       </Box>
 
-      {/* <FormArea handleFormData={handleFormData} setSubmited={setSubmited}/> */}
-
-      <Box display={'flex'} justifyContent={'center'}>
-        <SavedResultCard />
-
-        <div
-          style={{
-            margin: '0 auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <CompoundForm
-            sendDataToParent={handleFormData}
-            setSubmited={setSubmited}
-          />
-        </div>
-
-        <div // just an empty dic to center the form
-          style={{
-            marginLeft: '20px',
-            maxHeight: '400px',
-            width: '200px',
-          }}
-        />
-      </Box>
+      <FormArea
+        handleFormData={handleFormData}
+        setSubmited={setSubmited}
+        isMobile={isMobile}
+      />
 
       {submited && (
         <SumsCard
