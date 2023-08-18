@@ -26,27 +26,19 @@ export default function SumsCard({
   years,
 }: Props) {
 
-  // const sumsCardStyles = (theme:Theme) => ({
-  //   [theme.breakpoints.up('xs')]: {
-  //     width: '200px', margin: '20px auto' 
-  //   },
-  //   [theme.breakpoints.up('lg')]: {
-  //     width: '800px', margin: '20px auto' 
-  //   },
-  // })
-  const sumsCardStyles = (theme:Theme) => ({
-    [theme.breakpoints.up('xs')]: {
-      flexDirection:"column",
-          alignItems:"center"  
+  const sumsBoxStyles = (theme:Theme) => ({
+    [theme.breakpoints.down('sm')]: {
+      marginY:4
     },
-    [theme.breakpoints.up('lg')]: {
-      justifyContent:"space-between"
+    [theme.breakpoints.up('md')]: {
+      width:'30%',
+      
     },
   })
 
   return (
     <Card
-      sx={{maxWidth: '800px', margin: '20px auto'}}
+      sx={{maxWidth: '800px', margin: { xs: '30px', md:'20px auto' }}}
       size="lg"
       variant="outlined">
       {/* Sums */}
@@ -56,11 +48,12 @@ export default function SumsCard({
         
         sx={{ margin: 1, padding: 3, borderRadius: 8 }}>
         <Box
-          width="30%"
+          // width="30%"
           display="column"
           justifyContent="center"
           textAlign={'center'}
-          sx={{ margin: '0 auto' }}>
+          sx={{ margin: '0 auto' }}
+          >
           <Stack spacing={1}>
             <Typography level="body-md" textColor="inherit">
               Future Value
@@ -71,8 +64,6 @@ export default function SumsCard({
             </Typography>
           </Stack>
         </Box>
-
-
 
 
         <Stack
@@ -89,7 +80,9 @@ export default function SumsCard({
           
           textAlign={'center'}
           px={10}>
-          <Box width="30%">
+          <Box sx={sumsBoxStyles}
+          // width="30%"
+          >
              {/* <Stack spacing={1}> */}
               <Typography level="body-md" textColor="inherit">
                 Total Deposits
@@ -100,7 +93,10 @@ export default function SumsCard({
               </Typography>
             {/* </Stack> */}
           </Box>
-          <Box  width="30%">
+          <Box  
+          sx={sumsBoxStyles}
+          // width="30%"
+          >
             {/* <Stack spacing={1}> */}
               <Typography level="body-md" textColor="inherit">
                 Total Interest
@@ -116,12 +112,13 @@ export default function SumsCard({
 
       {/* Chart */}
       {
-        <Box display={'flex'} justifyContent={'center'}>
+        <Box display={'flex'} justifyContent={'center'} 
+        marginY={{ xs: -15, sm:0, md: 0 }}
+        >
           <BasicLineChart
             dataX={yearsToDataX(years)}
             dataY={futureValueArray}
           />
-          {/* <Typography level="body-xs">x axis</Typography> */}
         </Box>
       }
     </Card>

@@ -7,6 +7,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
+
 interface ParentProps {
   sendDataToParent: (data: {
     futureValue: number;

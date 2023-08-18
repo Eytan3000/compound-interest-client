@@ -58,18 +58,21 @@ export default function News() {
 
 
   return (
-    <Sheet variant="outlined" sx={{ marginTop: 5, padding: 5 }}>
+    <Sheet variant="outlined" sx={{ marginTop: 5, padding: 5, borderRadius:'10px' }}>
       <Typography sx={{ textAlign: 'center' }} level="h3">
         Today's highlights
       </Typography>
+            <Box display='flex' justifyContent={'center'} mt={3}>
+        <img height={20} alt="yahoo finance logo" src={yahooFinanceLogo} />
+        </Box>
 
-      <Box display={'flex'} justifyContent={'center'}>
+      <Box display={'flex'} justifyContent={'center'} flexWrap={'wrap'}>
         {newsData.map((newsItem, index) => {
-          if (newsItem.content.thumbnail && index < 5) {
+          if (newsItem.content.thumbnail && index < 3) {
             //sometimes there's no thumbnail, so checking if there's one.
             return (
               <Card
-                sx={{ minWidth: 300, margin: 4, height: '100%' }}
+                sx={{ width: 300, minWidth:300, margin: 4, height: '100%' }}
                 key={index}
                 variant="outlined">
                 <AspectRatio
@@ -101,8 +104,8 @@ export default function News() {
           }
           return null;
         })}
-        <img height={20} alt="yahoo finance logo" src={yahooFinanceLogo} />
       </Box>
+
     </Sheet>
   );
 }
