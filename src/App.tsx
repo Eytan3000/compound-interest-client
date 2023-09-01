@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch } from 'react';
 import './App.css';
-import { Box, Card, Container, Theme, Typography, styled } from '@mui/joy';
+import { Box, Theme, Typography } from '@mui/joy';
 import ResponsiveAppBar from './components/ui/ResponsiveAppBar';
-import CompoundForm from './components/form/CompoundForm';
 import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
 import News from './news/News';
@@ -17,6 +16,12 @@ type FormData = {
   totalInterest: number;
   futureValueArray: number[];
   yearsNum: number;
+  stateManager: {
+    setPrincipal: Dispatch<React.SetStateAction<string>>;
+    setMonthlyContribution: Dispatch<React.SetStateAction<string>>;
+    setYears: Dispatch<React.SetStateAction<string>>;
+    setInterestRate: Dispatch<React.SetStateAction<string>>;
+  };
 };
 
 //-------------------------------------------------
@@ -31,6 +36,7 @@ function App() {
   const [submited, setSubmited] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [dataPosted, setDataPosted] = useState<boolean>(false); // postData function re-renders savedResultCard after saving details to db
 
   //get the size of screen
   useEffect(() => {
@@ -65,7 +71,13 @@ function App() {
   });
 
   function handleFormData(data: FormData): void {
-    const { futureValue, totalInterest, futureValueArray, yearsNum } = data;
+    const {
+      futureValue,
+      totalInterest,
+      futureValueArray,
+      yearsNum,
+      stateManager,
+    } = data;
 
     const formattedFutureValue = formatSums(futureValue);
     const formattedTotalInterest = formatSums(totalInterest);
@@ -76,9 +88,13 @@ function App() {
     setTotalDeposits(formatedTotalDeposits);
     setfutureValueArray(futureValueArray);
     setYears(yearsNum);
+
+    // const x = stateManager;
+    console.log(stateManager);
   }
   const handleOpen = () => setMenuOpen(true);
   const handleClose = () => setMenuOpen(false);
+
   return (
     <>
       <ResponsiveAppBar isMobile={isMobile} handleOpen={handleOpen} />
@@ -89,7 +105,7 @@ function App() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description">
         <Box display={'flex'} justifyContent={'center'} mt={4}>
-          <SavedResultCard />
+          <SavedResultCard dataPosted={dataPosted} />
         </Box>
       </Modal>
 
@@ -107,6 +123,8 @@ function App() {
         handleFormData={handleFormData}
         setSubmited={setSubmited}
         isMobile={isMobile}
+        setDataPosted={setDataPosted}
+        dataPosted={dataPosted}
       />
 
       {submited && (

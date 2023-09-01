@@ -4,6 +4,8 @@ import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
 // import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
+import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import { postDataToDb } from '../../utils/database';
 
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
@@ -14,19 +16,34 @@ interface ParentProps {
     totalInterest: number;
     futureValueArray: number[];
     yearsNum: number;
+    stateManager:{
+      setPrincipal:React.Dispatch<React.SetStateAction<string>>,
+    setMonthlyContribution:React.Dispatch<React.SetStateAction<string>>,
+    setYears:React.Dispatch<React.SetStateAction<string>>,
+    setInterestRate:React.Dispatch<React.SetStateAction<string>>,
+    };
   }) => void;
   setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
+  setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 //-----------------------------------------------------------
 export default function CompoundForm({
   sendDataToParent,
   setSubmited,
+  setDataPosted,
 }: ParentProps) {
   const [principal, setPrincipal] = useState<string>('250000');
   const [monthlyContribution, setMonthlyContribution] = useState<string>('3500');
   const [years, setYears] = useState<string>('35');
   const [interestRate, setInterestRate] = useState<string>('6');
+
+  const stateManager = {
+    setPrincipal: setPrincipal,
+    setMonthlyContribution: setMonthlyContribution,
+    setYears: setYears,
+    setInterestRate: setInterestRate,
+  };
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
 
@@ -47,6 +64,7 @@ export default function CompoundForm({
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    
 
     if (
       principal === '' ||
@@ -74,8 +92,25 @@ export default function CompoundForm({
       totalInterest,
       futureValueArray,
       yearsNum,
+      stateManager
     }); //send to parent
     setSubmited(true); // sent from parent
+    
+    postDataToDb(
+      principal,
+      monthlyContribution,
+      yearsNum,
+      +interestRate,
+      futureValue
+    ).then(res=>{
+      if (res){
+        // render sums card
+        setDataPosted(prev=>{
+          return !prev
+        })
+      }
+    });
+
   };
 
   const handleReset = () => {
