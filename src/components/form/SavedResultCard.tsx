@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography } from '@mui/joy';
 import { get10RecentFv, getLog } from '../../utils/database';
+import { useDispatch, useSelector } from 'react-redux';
+import { formActions } from '../../store';
 //---------------------------------------------------
 type Object = {
   fv: number;
@@ -9,21 +11,20 @@ type Object = {
 
 interface Props {
   dataPosted: boolean;
-  // setPrincipal: React.Dispatch<React.SetStateAction<number>>;
-  // setMonthlyContribution: React.Dispatch<React.SetStateAction<number>>;
-  // setYears: React.Dispatch<React.SetStateAction<number>>;
-  // setInterestRate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 //---------------------------------------------------
 export default function SavedResultCard({
   dataPosted,
-  // setPrincipal,
-  // setMonthlyContribution,
-  // setYears,
-  // setInterestRate,
 }: Props) {
   const [logsArr, setLogsArray] = useState<Object[]>([]);
+
+//--
+// const reduxPrincipal = useSelector((state:any) => state.principal);
+
+const dispatch = useDispatch();
+
+//--
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +37,7 @@ export default function SavedResultCard({
   async function handleCardClick(e: any) {
     const id = e.target.id;
     /**
-    1) fetch log details
+    1) fetch log details - V
     2) make logs disapeare
     3) set these:
       -setPrincipal
@@ -49,10 +50,10 @@ export default function SavedResultCard({
 
     const log = await getLog(id);
     console.log(log);
-    // setPrincipal(log.principal);
-    // setMonthlyContribution(log.monthlyContribution);
-    // setYears(log.yearsToGrow);
-    // setInterestRate(log.yearlyInterestRate);
+    dispatch(formActions.setReduxPrincipal(log.principal));
+    dispatch(formActions.setReduxMonthlyContribution(log.monthlyContribution));
+    dispatch(formActions.setReduxYears(log.yearsToGrow));
+    dispatch(formActions.setReduxInterestRate(log.yearlyInterestRate));
   }
 
   return (

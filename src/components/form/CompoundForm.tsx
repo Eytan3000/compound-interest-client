@@ -4,9 +4,9 @@ import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
 // import { Grid } from '@mui/material';
 import { calculateFutureValue } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
-import { NumericFormat, NumericFormatProps } from 'react-number-format';
 import { postDataToDb } from '../../utils/database';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { formActions, sumsValuesActions } from '../../store';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
 
@@ -16,12 +16,6 @@ interface ParentProps {
     totalInterest: number;
     futureValueArray: number[];
     yearsNum: number;
-    stateManager:{
-      setPrincipal:React.Dispatch<React.SetStateAction<string>>,
-    setMonthlyContribution:React.Dispatch<React.SetStateAction<string>>,
-    setYears:React.Dispatch<React.SetStateAction<string>>,
-    setInterestRate:React.Dispatch<React.SetStateAction<string>>,
-    };
   }) => void;
   setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
   setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,22 +27,26 @@ export default function CompoundForm({
   setSubmited,
   setDataPosted,
 }: ParentProps) {
-  const [principal, setPrincipal] = useState<string>('250000');
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('3500');
-  const [years, setYears] = useState<string>('35');
-  const [interestRate, setInterestRate] = useState<string>('6');
-
-  const stateManager = {
-    setPrincipal: setPrincipal,
-    setMonthlyContribution: setMonthlyContribution,
-    setYears: setYears,
-    setInterestRate: setInterestRate,
-  };
+  // const [principal, setPrincipal] = useState<string>('');
+  // const [monthlyContribution, setMonthlyContribution] = useState<string>('');
+  // const [years, setYears] = useState<string>('');
+  // const [interestRate, setInterestRate] = useState<string>('');
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
 
+  //--
+  const dispatch = useDispatch();
+  const reduxPrincipal = useSelector((state: any) => state.form.principal);
+  const reduxMonthlyContribution = useSelector((state: any) => state.form.monthlyContribution);
+  const reduxYears = useSelector((state: any) => state.form.years);
+  const reduxInterestRate = useSelector((state: any) => state.form.interestRate);
+
+  const reduxFutureValue = useSelector((state: any) => state.sumsValues.futureValue);
+  // const reduxTotalInterest = useSelector((state: any) => state.sumsValues.totalInterest);
+  // const reduxFutureValueArray = useSelector((state: any) => state.sumsValues.futureValueArray);
+  //--
   const sheetStyles = (theme: Theme) => ({
-    padding:3,
+    padding: 3,
     margin: '0 auto',
     borderRadius: 10,
     [theme.breakpoints.up('xs')]: {
@@ -64,13 +62,12 @@ export default function CompoundForm({
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    
 
     if (
-      principal === '' ||
-      monthlyContribution === '' ||
-      years === '' ||
-      interestRate === ''
+      reduxPrincipal === '' ||
+      reduxMonthlyContribution === '' ||
+      reduxYears === '' ||
+      reduxInterestRate === ''
     ) {
       setEmptyField(true);
       return;
@@ -81,55 +78,59 @@ export default function CompoundForm({
     //destructuring returning elements from function that calculates the compound
     const { futureValue, totalInterest, futureValueArray } =
       calculateFutureValue(
-        +principal,
-        +monthlyContribution,
-        +years,
-        +interestRate
+        +reduxPrincipal,
+        +reduxMonthlyContribution,
+        +reduxYears,
+        +reduxInterestRate
       );
-    const yearsNum: number = +years;
+    const yearsNum: number = +reduxYears;
+
     sendDataToParent({
       futureValue,
       totalInterest,
       futureValueArray,
       yearsNum,
-      stateManager
     }); //send to parent
+    dispatch(sumsValuesActions.setReduxfutureValue(futureValue));
+
     setSubmited(true); // sent from parent
-    
+
     postDataToDb(
-      principal,
-      monthlyContribution,
+      reduxPrincipal,
+      reduxMonthlyContribution,
       yearsNum,
-      +interestRate,
+      +reduxInterestRate,
       futureValue
-    ).then(res=>{
-      if (res){
+    ).then((res) => {
+      if (res) {
         // render sums card
-        setDataPosted(prev=>{
-          return !prev
-        })
+        setDataPosted((prev) => {
+          return !prev;
+        });
       }
     });
-
   };
 
   const handleReset = () => {
-    setPrincipal('');
-    setMonthlyContribution('');
-    setYears('');
-    setInterestRate('');
+    // setPrincipal('');
+    // setMonthlyContribution('');
+    dispatch(formActions.setReduxPrincipal(''));
+    dispatch(formActions.setReduxMonthlyContribution(''));
+    dispatch(formActions.setReduxYears(''));
+    dispatch(formActions.setReduxInterestRate(''));
+
     setEmptyField(false);
   };
 
   const handleInputChange = (e: Event): void => {
     setEmptyField(false);
     if (e.target.id === 'initial-investment') {
-      setPrincipal(e.target.value);
+      // setPrincipal(e.target.value);
+      dispatch(formActions.setReduxPrincipal(e.target.value));
     }
-    if (e.target.id === 'monthly-contribution')
-      setMonthlyContribution(e.target.value);
-    if (e.target.id === 'years-to-grow') setYears(e.target.value);
-    if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
+    if (e.target.id === 'monthly-contribution') dispatch(formActions.setReduxMonthlyContribution(e.target.value));
+    if (e.target.id === 'years-to-grow')  dispatch(formActions.setReduxYears(e.target.value));
+    if (e.target.id === 'interest-rate') dispatch(formActions.setReduxInterestRate(e.target.value));
   };
   // const handleInputChange = (e: Event): void => {
   //   if (e.target.id === 'initial-investment') {
@@ -150,11 +151,14 @@ export default function CompoundForm({
 
   return (
     <>
-
-
       <Sheet variant="outlined" sx={sheetStyles}>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} columns={16} sx={{ flexGrow: 1 }} rowSpacing={{xs:2, md:5}}>
+          <Grid
+            container
+            spacing={2}
+            columns={16}
+            sx={{ flexGrow: 1 }}
+            rowSpacing={{ xs: 2, md: 5 }}>
             <Grid xs={10} mt={1.5}>
               <Typography marginY={1} marginX={4}>
                 Initial Investment
@@ -163,8 +167,8 @@ export default function CompoundForm({
             <Grid xs={6} mt={1.5}>
               <Input
                 type="number"
-                sx={{ marginRight: 2, height:'100%' }}
-                value={principal}
+                sx={{ marginRight: 2, height: '100%' }}
+                value={reduxPrincipal}
                 id="initial-investment"
                 placeholder="Example: 20,000"
                 variant="outlined"
@@ -181,12 +185,12 @@ export default function CompoundForm({
             <Grid xs={6} mt={1.5}>
               <Input
                 type="number"
-                value={monthlyContribution}
+                value={reduxMonthlyContribution}
                 id="monthly-contribution"
                 placeholder="Example: 1200"
                 variant="outlined"
                 color="primary"
-                sx={{ marginRight: 2, height:'100%' }}
+                sx={{ marginRight: 2, height: '100%' }}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -199,12 +203,12 @@ export default function CompoundForm({
             <Grid xs={6} mt={1.5}>
               <Input
                 type="number"
-                value={years}
+                value={reduxYears}
                 id="years-to-grow"
                 placeholder="Example: 15"
                 variant="outlined"
                 color="primary"
-                sx={{ marginRight: 2, height:'100%' }}
+                sx={{ marginRight: 2, height: '100%' }}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -217,12 +221,12 @@ export default function CompoundForm({
             <Grid xs={6} mt={1.5}>
               <Input
                 type="number"
-                value={interestRate}
+                value={reduxInterestRate}
                 id="interest-rate"
                 placeholder="Example: 7"
                 variant="outlined"
                 color="primary"
-                sx={{ marginRight: 2, height:'100%' }}
+                sx={{ marginRight: 2, height: '100%' }}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -236,19 +240,17 @@ export default function CompoundForm({
                 Reset
               </Button>
               <Button type="submit">Submit</Button>
-            
-
             </Grid>
           </Grid>
-            {emptyField && (
-              <Alert
-                sx={{ marginTop: 4 }}
-                startDecorator={<WarningIcon />}
-                variant="soft"
-                color="danger">
-                No empty fields are allowed{' '}
-              </Alert>
-            )}
+          {emptyField && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              No empty fields are allowed{' '}
+            </Alert>
+          )}
         </form>
       </Sheet>
     </>

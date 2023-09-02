@@ -16,12 +16,7 @@ type FormData = {
   totalInterest: number;
   futureValueArray: number[];
   yearsNum: number;
-  stateManager: {
-    setPrincipal: Dispatch<React.SetStateAction<string>>;
-    setMonthlyContribution: Dispatch<React.SetStateAction<string>>;
-    setYears: Dispatch<React.SetStateAction<string>>;
-    setInterestRate: Dispatch<React.SetStateAction<string>>;
-  };
+
 };
 
 //-------------------------------------------------
@@ -76,7 +71,6 @@ function App() {
       totalInterest,
       futureValueArray,
       yearsNum,
-      stateManager,
     } = data;
 
     const formattedFutureValue = formatSums(futureValue);
@@ -88,9 +82,6 @@ function App() {
     setTotalDeposits(formatedTotalDeposits);
     setfutureValueArray(futureValueArray);
     setYears(yearsNum);
-
-    // const x = stateManager;
-    console.log(stateManager);
   }
   const handleOpen = () => setMenuOpen(true);
   const handleClose = () => setMenuOpen(false);

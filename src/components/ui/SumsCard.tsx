@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Card, Divider, Sheet, Stack, Typography, Theme } from '@mui/joy';
 import BasicLineChart from './Chart';
+import { useSelector } from 'react-redux';
 //-------------------------------------------------
 interface Props {
   futureValue: number | string;
@@ -25,6 +26,7 @@ export default function SumsCard({
   futureValueArray,
   years,
 }: Props) {
+  const reduxFutureValue = useSelector((state: any) => state.sumsValues.futureValue);
 
   const sumsBoxStyles = (theme:Theme) => ({
     [theme.breakpoints.down('sm')]: {
@@ -60,7 +62,8 @@ export default function SumsCard({
             </Typography>
             <Divider />
             <Typography level="h4" textColor="inherit">
-              ${futureValue.toLocaleString()}
+              {/* ${futureValue.toLocaleString()} */}
+              ${reduxFutureValue.toLocaleString()}
             </Typography>
           </Stack>
         </Box>

@@ -9,12 +9,6 @@ interface Props {
     totalInterest: number;
     futureValueArray: number[];
     yearsNum: number;
-    stateManager: {
-      setPrincipal: Dispatch<React.SetStateAction<string>>;
-      setMonthlyContribution: Dispatch<React.SetStateAction<string>>;
-      setYears: Dispatch<React.SetStateAction<string>>;
-      setInterestRate: Dispatch<React.SetStateAction<string>>;
-    };
   }) => void;
   setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
   isMobile:boolean;
