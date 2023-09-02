@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
 //  import Grid from '@mui/system/Unstable_Grid';
 // import { Grid } from '@mui/material';
-import { calculateFutureValue } from '../../utils/helpers';
+import { calculateFutureValue, formatSums } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
 import { postDataToDb } from '../../utils/database';
 import { useDispatch, useSelector } from 'react-redux';
@@ -91,7 +91,14 @@ export default function CompoundForm({
       futureValueArray,
       yearsNum,
     }); //send to parent
-    dispatch(sumsValuesActions.setReduxfutureValue(futureValue));
+
+    const formattedFutureValue = formatSums(futureValue);
+    const formattedTotalInterest = formatSums(totalInterest);
+    // const formatedTotalDeposits = formatSums(futureValue - totalInterest);
+
+    dispatch(sumsValuesActions.setReduxfutureValue(formattedFutureValue));
+    dispatch(sumsValuesActions.setReduxtotalInterest(formattedTotalInterest));
+    dispatch(sumsValuesActions.setReduxfutureValueArray(futureValueArray));
 
     setSubmited(true); // sent from parent
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Card, Divider, Sheet, Stack, Typography, Theme } from '@mui/joy';
 import BasicLineChart from './Chart';
 import { useSelector } from 'react-redux';
+import { formatSums } from '../../utils/helpers';
 //-------------------------------------------------
 interface Props {
   futureValue: number | string;
@@ -27,6 +28,16 @@ export default function SumsCard({
   years,
 }: Props) {
   const reduxFutureValue = useSelector((state: any) => state.sumsValues.futureValue);
+  const reduxTotalInterest = useSelector((state: any) => state.sumsValues.totalInterest);
+  const reduxFutureValueArray = useSelector((state: any) => state.sumsValues.futureValueArray);
+  
+  const reduxYears = useSelector((state: any) => state.form.years);
+
+  const reduxTotalDeposits = parseFloat(reduxFutureValue.replace(/,/g, '')) - parseFloat(reduxTotalInterest.replace(/,/g, ''));  //turn each value to from string to number, and then subtraction
+
+  const formatedTotalDeposits = formatSums(reduxTotalDeposits); //back to string
+
+  console.log(reduxFutureValue, reduxTotalInterest)
 
   const sumsBoxStyles = (theme:Theme) => ({
     [theme.breakpoints.down('sm')]: {
@@ -92,7 +103,8 @@ export default function SumsCard({
               </Typography>
               <Divider />
               <Typography level="h4" textColor="inherit">
-                ${totalDeposits.toLocaleString()}
+                {/* ${totalDeposits.toLocaleString()} */}
+                ${formatedTotalDeposits.toLocaleString()}
               </Typography>
             {/* </Stack> */}
           </Box>
@@ -106,7 +118,8 @@ export default function SumsCard({
               </Typography>
               <Divider />
               <Typography level="h4" textColor="inherit">
-                ${totalInteres.toLocaleString()}
+                {/* ${totalInteres.toLocaleString()} */}
+                ${reduxTotalInterest.toLocaleString()}
               </Typography>
             {/* </Stack> */}
           </Box>
@@ -119,8 +132,9 @@ export default function SumsCard({
         marginY={{ xs: -15, sm:0, md: 0 }}
         >
           <BasicLineChart
-            dataX={yearsToDataX(years)}
-            dataY={futureValueArray}
+            dataX={yearsToDataX(reduxYears)}
+            // dataY={futureValueArray}
+            dataY={reduxFutureValueArray}
           />
         </Box>
       }

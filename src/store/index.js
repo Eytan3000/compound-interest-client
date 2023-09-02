@@ -29,7 +29,7 @@ const formSlice = createSlice({
 const initialSumsValuesState = {
     futureValue:0,
       totalInterest:0,
-      futureValueArray:0,
+      futureValueArray:[],
   };
 
 const sumsValuesSlice = createSlice({

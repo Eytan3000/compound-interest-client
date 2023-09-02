@@ -72,7 +72,7 @@ function App() {
       futureValueArray,
       yearsNum,
     } = data;
-
+    
     const formattedFutureValue = formatSums(futureValue);
     const formattedTotalInterest = formatSums(totalInterest);
     const formatedTotalDeposits = formatSums(futureValue - totalInterest);
