@@ -251,12 +251,12 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
             <Grid xs={10} mt={1.5}></Grid>
             <Grid xs={6} padding={2} display="flex" justifyContent="flex-end">
               <Button
-                color="warning"
-                sx={{ marginX: '8px' }}
+                // color="warning"
+                sx={{ marginX: '8px' , background:'#3a4252' }}
                 onClick={handleReset}>
                 Reset
               </Button>
-              <Button type="submit" disabled={disabled}>
+              <Button type="submit" disabled={disabled} sx={{background:'#ff2e63'}}>
                 Submit
               </Button>
             </Grid>
@@ -268,7 +268,8 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
               sx={{ marginTop: 4 }}
               startDecorator={<WarningIcon />}
               variant="soft"
-              color="danger">
+              color="danger"
+              >
               No empty fields are allowed{' '}
             </Alert>
           )}

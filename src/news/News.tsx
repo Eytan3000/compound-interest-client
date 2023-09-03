@@ -4,6 +4,7 @@ import Link from '@mui/joy/Link';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { yahooFinanceLogo } from '../utils/links';
 import axios from 'axios';
+import { yahooNewsApi } from '../utils/api';
 //---------------------------------------
 
 interface NewsItem {
@@ -36,16 +37,17 @@ export default function News() {
     (async function () {
       setLoading(true);
       try {
-        // Real API:
+        // // Real API:
         // const response = await yahooNewsApi();
         // const data = response.data.data.main.stream;
         // setNewsData(data); //newsArray
 
-        // json api
+      //   // json api
         setTimeout(async()=>{
           const response = await axios.get('/data/YahooFinance.json');
         setNewsData(response.data);
       },1500)
+
       console.log('api loads')
 
       } catch (error) {

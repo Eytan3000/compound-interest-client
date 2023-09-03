@@ -1,3 +1,5 @@
+const url = 'http://localhost:8090/';
+
 export async function postDataToDb(
   principal,
   monthlyContribution,
@@ -13,7 +15,7 @@ export async function postDataToDb(
     fv, totalDeposit, totalInterest
   };
   try {
-    const response = await fetch('http://localhost:8090/logs', {
+    const response = await fetch(url+ 'logs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ export async function postDataToDb(
 
 export async function get10RecentFv() {
   try {
-    const response = await fetch('http://localhost:8090/10LastFv', {
+    const response = await fetch(url + '10LastFv', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -46,7 +48,7 @@ export async function get10RecentFv() {
 
 export async function getLog(id) {
   try {
-    const response = await fetch('http://localhost:8090/logs/' + id, {
+    const response = await fetch(url + 'logs/' + id, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

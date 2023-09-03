@@ -12,11 +12,10 @@ import { useSelector } from 'react-redux';
 import Footer from './components/ui/Footer';
 
 //-------------------------------------------------
-
 //-------------------------------------------------
 
 function App() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [dataPosted, setDataPosted] = useState<boolean>(false); // postData function re-renders savedResultCard after saving details to db
 
@@ -94,7 +93,7 @@ function App() {
       )}
       <News />
       <HpArticle />
-      <Footer />
+      <Footer isMobile={isMobile} />
     </>
   );
 }

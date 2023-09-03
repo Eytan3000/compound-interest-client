@@ -14,6 +14,8 @@ import Container from '@mui/material/Container';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton } from '@mui/joy';
+import logo from '../../Images/Logo.png';
+
 // const pages = ['Products', 'Pricing', 'Blog'];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -49,10 +51,13 @@ function ResponsiveAppBar({ isMobile, handleOpen }: Props) {
   };
 
   return (
-    <AppBar position="static" color="default" variant="outlined">
+    <AppBar position="static" 
+    // color="default"
+    sx={{background:'#eaeaea'}}
+     variant="outlined">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -69,12 +74,16 @@ function ResponsiveAppBar({ isMobile, handleOpen }: Props) {
               textDecoration: 'none',
             }}>
             LOGO
-          </Typography>
-
+          </Typography> */}
+            
+            <img src={logo} alt='logo' style={{height:50}}/>
+            
           {isMobile && (
             <IconButton
               sx={{
                 marginLeft: 'auto', // Pushes the menu icon to the right
+                color:'#ff2e63'
+                
               }}
               onClick={handleClickMenu}>
               <MenuIcon />
