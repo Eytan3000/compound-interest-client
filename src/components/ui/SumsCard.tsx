@@ -4,13 +4,6 @@ import BasicLineChart from './Chart';
 import { useSelector } from 'react-redux';
 import { formatSums } from '../../utils/helpers';
 //-------------------------------------------------
-interface Props {
-  futureValue: number | string;
-  totalDeposits: number | string;
-  totalInteres: number | string;
-  futureValueArray: number[];
-  years: number;
-}
 
 function yearsToDataX(years: number): number[] {
   let yearsArr = [];
@@ -20,24 +13,13 @@ function yearsToDataX(years: number): number[] {
   return yearsArr;
 }
 //-------------------------------------------------
-export default function SumsCard({
-  futureValue,
-  totalDeposits,
-  totalInteres,
-  futureValueArray,
-  years,
-}: Props) {
+export default function SumsCard() {
   const reduxFutureValue = useSelector((state: any) => state.sumsValues.futureValue);
   const reduxTotalInterest = useSelector((state: any) => state.sumsValues.totalInterest);
   const reduxFutureValueArray = useSelector((state: any) => state.sumsValues.futureValueArray);
-  
   const reduxYears = useSelector((state: any) => state.form.years);
-
-  const reduxTotalDeposits = parseFloat(reduxFutureValue.replace(/,/g, '')) - parseFloat(reduxTotalInterest.replace(/,/g, ''));  //turn each value to from string to number, and then subtraction
-
+  const reduxTotalDeposits = parseFloat(reduxFutureValue.replace(/,/g, '')) - parseFloat(reduxTotalInterest.replace(/,/g, ''));  //turn each value from string to number, and then subtraction
   const formatedTotalDeposits = formatSums(reduxTotalDeposits); //back to string
-
-  console.log(reduxFutureValue, reduxTotalInterest)
 
   const sumsBoxStyles = (theme:Theme) => ({
     [theme.breakpoints.down('sm')]: {
@@ -73,7 +55,6 @@ export default function SumsCard({
             </Typography>
             <Divider />
             <Typography level="h4" textColor="inherit">
-              {/* ${futureValue.toLocaleString()} */}
               ${reduxFutureValue.toLocaleString()}
             </Typography>
           </Stack>
@@ -103,14 +84,12 @@ export default function SumsCard({
               </Typography>
               <Divider />
               <Typography level="h4" textColor="inherit">
-                {/* ${totalDeposits.toLocaleString()} */}
                 ${formatedTotalDeposits.toLocaleString()}
               </Typography>
             {/* </Stack> */}
           </Box>
           <Box  
           sx={sumsBoxStyles}
-          // width="30%"
           >
             {/* <Stack spacing={1}> */}
               <Typography level="body-md" textColor="inherit">
@@ -118,7 +97,6 @@ export default function SumsCard({
               </Typography>
               <Divider />
               <Typography level="h4" textColor="inherit">
-                {/* ${totalInteres.toLocaleString()} */}
                 ${reduxTotalInterest.toLocaleString()}
               </Typography>
             {/* </Stack> */}
@@ -133,7 +111,6 @@ export default function SumsCard({
         >
           <BasicLineChart
             dataX={yearsToDataX(reduxYears)}
-            // dataY={futureValueArray}
             dataY={reduxFutureValueArray}
           />
         </Box>

@@ -1,8 +1,7 @@
-import React, { useEffect, useState, Dispatch } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Box, Theme, Typography } from '@mui/joy';
 import ResponsiveAppBar from './components/ui/ResponsiveAppBar';
-import { formatSums } from './utils/helpers';
 import SumsCard from './components/ui/SumsCard';
 import News from './news/News';
 import HpArticle from './news/HpArticle';
@@ -11,23 +10,10 @@ import FormArea from './components/form/FormArea';
 import Modal from '@mui/material/Modal';
 
 //-------------------------------------------------
-type FormData = {
-  futureValue: number;
-  totalInterest: number;
-  futureValueArray: number[];
-  yearsNum: number;
-
-};
 
 //-------------------------------------------------
 
 function App() {
-  const [futureValue, setFutureValue] = useState<string>('');
-  const [totalInteres, setTotalInterest] = useState<number | string>('');
-  const [totalDeposits, setTotalDeposits] = useState<number | string>('');
-  const [futureValueArray, setfutureValueArray] = useState<number[]>([]);
-  const [years, setYears] = useState<number>(0);
-
   const [submited, setSubmited] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -65,24 +51,6 @@ function App() {
     },
   });
 
-  function handleFormData(data: FormData): void {
-    const {
-      futureValue,
-      totalInterest,
-      futureValueArray,
-      yearsNum,
-    } = data;
-    
-    const formattedFutureValue = formatSums(futureValue);
-    const formattedTotalInterest = formatSums(totalInterest);
-    const formatedTotalDeposits = formatSums(futureValue - totalInterest);
-
-    setFutureValue(formattedFutureValue);
-    setTotalInterest(formattedTotalInterest);
-    setTotalDeposits(formatedTotalDeposits);
-    setfutureValueArray(futureValueArray);
-    setYears(yearsNum);
-  }
   const handleOpen = () => setMenuOpen(true);
   const handleClose = () => setMenuOpen(false);
 
@@ -111,7 +79,7 @@ function App() {
       </Box>
 
       <FormArea
-        handleFormData={handleFormData}
+        // handleFormData={handleFormData}
         setSubmited={setSubmited}
         isMobile={isMobile}
         setDataPosted={setDataPosted}
@@ -119,13 +87,7 @@ function App() {
       />
 
       {submited && (
-        <SumsCard
-          futureValue={futureValue}
-          totalDeposits={totalDeposits}
-          totalInteres={totalInteres}
-          futureValueArray={futureValueArray}
-          years={years}
-        />
+        <SumsCard />
       )}
       <News />
       <HpArticle />

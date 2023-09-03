@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
-//  import Grid from '@mui/system/Unstable_Grid';
-// import { Grid } from '@mui/material';
 import { calculateFutureValue, formatSums } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
 import { postDataToDb } from '../../utils/database';
@@ -11,40 +9,24 @@ import { formActions, sumsValuesActions } from '../../store';
 type Event = React.ChangeEvent<HTMLInputElement>;
 
 interface ParentProps {
-  sendDataToParent: (data: {
-    futureValue: number;
-    totalInterest: number;
-    futureValueArray: number[];
-    yearsNum: number;
-  }) => void;
   setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
   setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 //-----------------------------------------------------------
 export default function CompoundForm({
-  sendDataToParent,
   setSubmited,
   setDataPosted,
 }: ParentProps) {
-  // const [principal, setPrincipal] = useState<string>('');
-  // const [monthlyContribution, setMonthlyContribution] = useState<string>('');
-  // const [years, setYears] = useState<string>('');
-  // const [interestRate, setInterestRate] = useState<string>('');
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
 
-  //--
   const dispatch = useDispatch();
   const reduxPrincipal = useSelector((state: any) => state.form.principal);
   const reduxMonthlyContribution = useSelector((state: any) => state.form.monthlyContribution);
   const reduxYears = useSelector((state: any) => state.form.years);
   const reduxInterestRate = useSelector((state: any) => state.form.interestRate);
 
-  const reduxFutureValue = useSelector((state: any) => state.sumsValues.futureValue);
-  // const reduxTotalInterest = useSelector((state: any) => state.sumsValues.totalInterest);
-  // const reduxFutureValueArray = useSelector((state: any) => state.sumsValues.futureValueArray);
-  //--
   const sheetStyles = (theme: Theme) => ({
     padding: 3,
     margin: '0 auto',
@@ -85,12 +67,12 @@ export default function CompoundForm({
       );
     const yearsNum: number = +reduxYears;
 
-    sendDataToParent({
-      futureValue,
-      totalInterest,
-      futureValueArray,
-      yearsNum,
-    }); //send to parent
+    // sendDataToParent({
+    //   futureValue,
+    //   totalInterest,
+    //   futureValueArray,
+    //   yearsNum,
+    // }); //send to parent
 
     const formattedFutureValue = formatSums(futureValue);
     const formattedTotalInterest = formatSums(totalInterest);

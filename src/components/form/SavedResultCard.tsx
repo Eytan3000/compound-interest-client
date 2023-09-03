@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography } from '@mui/joy';
 import { get10RecentFv, getLog } from '../../utils/database';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { formActions } from '../../store';
 //---------------------------------------------------
 type Object = {
@@ -12,19 +12,11 @@ type Object = {
 interface Props {
   dataPosted: boolean;
 }
-
 //---------------------------------------------------
-export default function SavedResultCard({
-  dataPosted,
-}: Props) {
+export default function SavedResultCard({ dataPosted }: Props) {
   const [logsArr, setLogsArray] = useState<Object[]>([]);
 
-//--
-// const reduxPrincipal = useSelector((state:any) => state.principal);
-
-const dispatch = useDispatch();
-
-//--
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
