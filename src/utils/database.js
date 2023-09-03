@@ -3,14 +3,14 @@ export async function postDataToDb(
   monthlyContribution,
   yearsToGrow,
   yearlyInterestRate,
-  fv
+  fv, totalDeposit, totalInterest
 ) {
   const postData = {
     principal,
     monthlyContribution,
     yearsToGrow,
     yearlyInterestRate,
-    fv,
+    fv, totalDeposit, totalInterest
   };
   try {
     const response = await fetch('http://localhost:8090/logs', {
@@ -22,7 +22,6 @@ export async function postDataToDb(
     });
 
     const data = await response.json();
-    // console.log(data);
     return data;
   } catch (err) {
     console.error('Error:', err);

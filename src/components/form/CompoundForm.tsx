@@ -4,28 +4,50 @@ import { calculateFutureValue, formatSums } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
 import { postDataToDb } from '../../utils/database';
 import { useDispatch, useSelector } from 'react-redux';
-import { formActions, sumsValuesActions } from '../../store';
+import {
+  appActions,
+  formActions,
+  resultCardActions,
+  sumsValuesActions,
+} from '../../store';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
 
 interface ParentProps {
-  setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
   setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 //-----------------------------------------------------------
-export default function CompoundForm({
-  setSubmited,
-  setDataPosted,
-}: ParentProps) {
+export default function CompoundForm({ setDataPosted }: ParentProps) {
 
   const [emptyField, setEmptyField] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
+
+  const [principalExceeds, setPrincipalExceeds] = useState<boolean>(false);
+  const [monthlyContributionExceeds, setMonthlyContributionExceeds] =
+    useState<boolean>(false);
+  const [yearsExceeds, setYearsExceeds] = useState<boolean>(false);
+  const [interestRateExceeds, setInterestRateExceeds] =
+    useState<boolean>(false);
 
   const dispatch = useDispatch();
   const reduxPrincipal = useSelector((state: any) => state.form.principal);
-  const reduxMonthlyContribution = useSelector((state: any) => state.form.monthlyContribution);
+  const reduxMonthlyContribution = useSelector(
+    (state: any) => state.form.monthlyContribution
+  );
   const reduxYears = useSelector((state: any) => state.form.years);
-  const reduxInterestRate = useSelector((state: any) => state.form.interestRate);
+  const reduxInterestRate = useSelector(
+    (state: any) => state.form.interestRate
+  );
+
+
+  function AlertFieldsFalse(){
+    setEmptyField(false);
+    setPrincipalExceeds(false);
+    setMonthlyContributionExceeds(false);
+    setYearsExceeds(false);
+    setInterestRateExceeds(false);
+  }
 
   const sheetStyles = (theme: Theme) => ({
     padding: 3,
@@ -45,6 +67,7 @@ export default function CompoundForm({
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
+    //Input checks:
     if (
       reduxPrincipal === '' ||
       reduxMonthlyContribution === '' ||
@@ -55,7 +78,25 @@ export default function CompoundForm({
       return;
     }
 
-    setEmptyField(false);
+    if (reduxPrincipal > 1000000000) {
+      setPrincipalExceeds(true);
+      return;
+    }
+    if (reduxMonthlyContribution > 1000000) {
+      setMonthlyContributionExceeds(true);
+      return;
+    }
+    if (reduxYears > 100) {
+      setYearsExceeds(true);
+      return;
+    }
+    if (reduxInterestRate > 100) {
+      setInterestRateExceeds(true);
+      return;
+    }
+
+    
+    AlertFieldsFalse();
 
     //destructuring returning elements from function that calculates the compound
     const { futureValue, totalInterest, futureValueArray } =
@@ -67,29 +108,25 @@ export default function CompoundForm({
       );
     const yearsNum: number = +reduxYears;
 
-    // sendDataToParent({
-    //   futureValue,
-    //   totalInterest,
-    //   futureValueArray,
-    //   yearsNum,
-    // }); //send to parent
-
     const formattedFutureValue = formatSums(futureValue);
     const formattedTotalInterest = formatSums(totalInterest);
-    // const formatedTotalDeposits = formatSums(futureValue - totalInterest);
 
     dispatch(sumsValuesActions.setReduxfutureValue(formattedFutureValue));
     dispatch(sumsValuesActions.setReduxtotalInterest(formattedTotalInterest));
     dispatch(sumsValuesActions.setReduxfutureValueArray(futureValueArray));
 
-    setSubmited(true); // sent from parent
+    dispatch(appActions.setReduxSubmit(true));
+
+    const totalDeposit = futureValue - totalInterest;
 
     postDataToDb(
       reduxPrincipal,
       reduxMonthlyContribution,
       yearsNum,
       +reduxInterestRate,
-      futureValue
+      futureValue,
+      totalDeposit,
+      totalInterest
     ).then((res) => {
       if (res) {
         // render sums card
@@ -98,45 +135,36 @@ export default function CompoundForm({
         });
       }
     });
+
+    setDisabled(true);
   };
 
   const handleReset = () => {
-    // setPrincipal('');
-    // setMonthlyContribution('');
     dispatch(formActions.setReduxPrincipal(''));
     dispatch(formActions.setReduxMonthlyContribution(''));
     dispatch(formActions.setReduxYears(''));
     dispatch(formActions.setReduxInterestRate(''));
 
-    setEmptyField(false);
+    dispatch(appActions.setReduxSubmit(false));
+    dispatch(resultCardActions.setId(false));
+
+    setDisabled(false);
+    AlertFieldsFalse();
   };
 
   const handleInputChange = (e: Event): void => {
-    setEmptyField(false);
-    if (e.target.id === 'initial-investment') {
-      // setPrincipal(e.target.value);
-      dispatch(formActions.setReduxPrincipal(e.target.value));
-    }
-    if (e.target.id === 'monthly-contribution') dispatch(formActions.setReduxMonthlyContribution(e.target.value));
-    if (e.target.id === 'years-to-grow')  dispatch(formActions.setReduxYears(e.target.value));
-    if (e.target.id === 'interest-rate') dispatch(formActions.setReduxInterestRate(e.target.value));
-  };
-  // const handleInputChange = (e: Event): void => {
-  //   if (e.target.id === 'initial-investment') {
-  //     const inputValue = e.target.value.replace(/,/g, ''); // Remove existing commas
-  //     const numericValue = parseFloat(inputValue);
-  //     if (!isNaN(numericValue)) {
-  //       setPrincipal(numericValue.toLocaleString()); // Format with commas
-  //     } else {
-  //       setPrincipal(inputValue); // If not a valid number, set as is
-  //     }
-  //   } else if (e.target.id === 'monthly-contribution') {
-  //           setMonthlyContribution(e.target.value);
+    setDisabled(false);
+    AlertFieldsFalse();
 
-  //   }
-  //     if (e.target.id === 'years-to-grow') setYears(e.target.value);
-  //   if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
-  // };
+    if (e.target.id === 'initial-investment')
+      dispatch(formActions.setReduxPrincipal(e.target.value));
+    if (e.target.id === 'monthly-contribution')
+      dispatch(formActions.setReduxMonthlyContribution(e.target.value));
+    if (e.target.id === 'years-to-grow')
+      dispatch(formActions.setReduxYears(e.target.value));
+    if (e.target.id === 'interest-rate')
+      dispatch(formActions.setReduxInterestRate(e.target.value));
+  };
 
   return (
     <>
@@ -228,9 +256,13 @@ export default function CompoundForm({
                 onClick={handleReset}>
                 Reset
               </Button>
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={disabled}>
+                Submit
+              </Button>
             </Grid>
           </Grid>
+          
+          {/* Alerts */}
           {emptyField && (
             <Alert
               sx={{ marginTop: 4 }}
@@ -240,8 +272,47 @@ export default function CompoundForm({
               No empty fields are allowed{' '}
             </Alert>
           )}
+          {principalExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Initial Investment must be less than 1 billion
+            </Alert>
+          )}
+          {monthlyContributionExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Monthly contribution must be less than 1 million
+            </Alert>
+          )}
+          {yearsExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Years to grow must be less than 100
+              </Alert>
+          )}
+          {interestRateExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Interest rate must be less than 100
+            </Alert>
+          )}
         </form>
       </Sheet>
     </>
   );
 }
+
+
+

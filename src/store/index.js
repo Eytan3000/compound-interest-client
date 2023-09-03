@@ -48,15 +48,50 @@ const sumsValuesSlice = createSlice({
   },
 });
 
+//-----------------------------------------------
+const initialAppState = {
+    submit:false
+  };
+
+const appSlice = createSlice({
+  name: 'app',
+  initialState: initialAppState,
+  reducers: {
+    setReduxSubmit(state, action) {
+      state.submit = action.payload;
+    },
+  },
+});
+//-----------------------------------------------
+
+const initialResultCardState = {
+    id:-1
+  };
+
+const resultCardSlice = createSlice({
+  name: 'ResultCard',
+  initialState: initialResultCardState,
+  reducers: {
+    setId(state, action) {
+      state.id = action.payload;
+    },
+  },
+});
+
+//-----------------------------------------------
 const store = configureStore({
     reducer: {
       form: formSlice.reducer,
       sumsValues: sumsValuesSlice.reducer,
+      app: appSlice.reducer,
+      resultCard: resultCardSlice.reducer,
     },
 //   reducer: formSlice.reducer,
 });
 
 export const formActions = formSlice.actions;
 export const sumsValuesActions = sumsValuesSlice.actions;
+export const appActions = appSlice.actions;
+export const resultCardActions = resultCardSlice.actions;
 
 export default store;

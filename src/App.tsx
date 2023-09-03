@@ -8,16 +8,19 @@ import HpArticle from './news/HpArticle';
 import SavedResultCard from './components/form/SavedResultCard';
 import FormArea from './components/form/FormArea';
 import Modal from '@mui/material/Modal';
+import { useSelector } from 'react-redux';
+import Footer from './components/ui/Footer';
 
 //-------------------------------------------------
 
 //-------------------------------------------------
 
 function App() {
-  const [submited, setSubmited] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [dataPosted, setDataPosted] = useState<boolean>(false); // postData function re-renders savedResultCard after saving details to db
+
+  const reduxSubmit = useSelector((state: any) => state.app.submit);
 
   //get the size of screen
   useEffect(() => {
@@ -62,10 +65,12 @@ function App() {
         open={menuOpen}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description">
-        <Box display={'flex'} justifyContent={'center'} mt={4}>
+        aria-describedby="modal-modal-description"
+        >
+        {/* <Box display={'flex'} justifyContent={'center'} mt={4}>
           <SavedResultCard dataPosted={dataPosted} />
-        </Box>
+        </Box> */}
+        <SavedResultCard isMobile={isMobile} dataPosted={dataPosted} />
       </Modal>
 
       <Box
@@ -79,18 +84,17 @@ function App() {
       </Box>
 
       <FormArea
-        // handleFormData={handleFormData}
-        setSubmited={setSubmited}
         isMobile={isMobile}
         setDataPosted={setDataPosted}
         dataPosted={dataPosted}
       />
 
-      {submited && (
+      {reduxSubmit && (
         <SumsCard />
       )}
       <News />
       <HpArticle />
+      <Footer />
     </>
   );
 }

@@ -29,7 +29,9 @@ export default function SumsCard() {
       width:'30%',
       
     },
-  })
+  });
+
+  console.log(reduxYears, reduxFutureValueArray.length);
 
   return (
     <Card
@@ -109,10 +111,12 @@ export default function SumsCard() {
         <Box display={'flex'} justifyContent={'center'} 
         marginY={{ xs: -15, sm:0, md: 0 }}
         >
-          <BasicLineChart
+          {yearsToDataX(reduxYears).length === reduxFutureValueArray.length //these two must be the same for the chart to work properly
+          && 
+          <BasicLineChart 
             dataX={yearsToDataX(reduxYears)}
             dataY={reduxFutureValueArray}
-          />
+          />}
         </Box>
       }
     </Card>

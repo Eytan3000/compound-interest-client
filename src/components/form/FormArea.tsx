@@ -4,18 +4,18 @@ import SavedResultCard from './SavedResultCard';
 import CompoundForm from './CompoundForm';
 
 interface Props {
-  setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
   isMobile:boolean;
   setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
   dataPosted:boolean;
 }
 
 export default function FormArea({ 
-  setSubmited, isMobile, setDataPosted, dataPosted }: Props) {
+  // setSubmited,
+   isMobile, setDataPosted, dataPosted }: Props) {
   
   return (
     <Box display={'flex'} justifyContent={'center'}>
-     {!isMobile && <SavedResultCard dataPosted={dataPosted}/>} 
+     {!isMobile && <SavedResultCard isMobile={isMobile} dataPosted={dataPosted}/>} 
 
       <div
         style={{
@@ -26,7 +26,6 @@ export default function FormArea({
         }}>
         <CompoundForm
         setDataPosted={setDataPosted}
-          setSubmited={setSubmited}
         />
       </div>
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography } from '@mui/joy';
 import { get10RecentFv, getLog } from '../../utils/database';
-import { useDispatch } from 'react-redux';
-import { formActions } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { appActions, formActions, resultCardActions, sumsValuesActions } from '../../store';
+import { calculateFutureValue, formatSums } from '../../utils/helpers';
 //---------------------------------------------------
 type Object = {
   fv: number;
@@ -11,10 +12,13 @@ type Object = {
 
 interface Props {
   dataPosted: boolean;
+  isMobile: boolean;
 }
 //---------------------------------------------------
-export default function SavedResultCard({ dataPosted }: Props) {
+export default function SavedResultCard({ dataPosted, isMobile }: Props) {
   const [logsArr, setLogsArray] = useState<Object[]>([]);
+  
+  const idState = useSelector((state:any)=>state.resultCard.id);
 
   const dispatch = useDispatch();
 
@@ -28,24 +32,39 @@ export default function SavedResultCard({ dataPosted }: Props) {
 
   async function handleCardClick(e: any) {
     const id = e.target.id;
-    /**
-    1) fetch log details - V
-    2) make logs disapeare
-    3) set these:
-      -setPrincipal
-      -setMonthlyContribution
-      -setYears
-      -setInterestRate
-    4) handle sumbit()
-    5) change background to selected
-    */
 
+    //fetching from database
     const log = await getLog(id);
-    console.log(log);
+
+    // dispatcing states to see them in the form values
     dispatch(formActions.setReduxPrincipal(log.principal));
     dispatch(formActions.setReduxMonthlyContribution(log.monthlyContribution));
     dispatch(formActions.setReduxYears(log.yearsToGrow));
     dispatch(formActions.setReduxInterestRate(log.yearlyInterestRate));
+    
+    //destructuring returning elements from function that calculates the compound
+    const { futureValue, totalInterest, futureValueArray } =
+      calculateFutureValue(
+        log.principal,
+        log.monthlyContribution,
+        log.yearsToGrow,
+        log.yearlyInterestRate
+      );
+   
+      // formating to string
+    const formattedFutureValue = formatSums(futureValue);
+    const formattedTotalInterest = formatSums(totalInterest);
+    
+    // dispatching to see sums in sumsCard
+    dispatch(sumsValuesActions.setReduxfutureValue(formattedFutureValue));
+    dispatch(sumsValuesActions.setReduxtotalInterest(formattedTotalInterest));
+    dispatch(sumsValuesActions.setReduxfutureValueArray(futureValueArray));
+
+    //set submited to true (to see the card)
+    dispatch(appActions.setReduxSubmit(true));
+
+    // setId(log.id);
+    dispatch(resultCardActions.setId(log.id));
   }
 
   return (
@@ -56,6 +75,9 @@ export default function SavedResultCard({ dataPosted }: Props) {
         width: '200px',
         overflowY: 'auto',
         flexDirection: 'column',
+        margin: isMobile ? '0 auto' :null,
+        marginTop:isMobile ? 10 : null
+
       }}
       size="lg"
       variant="outlined">
@@ -71,7 +93,8 @@ export default function SavedResultCard({ dataPosted }: Props) {
               onClick={(e) => handleCardClick(e)}
               key={index}
               variant="outlined"
-              sx={{ marginY: 2, textAlign: 'center', cursor: 'pointer' }}>
+              sx={{ marginY: 2, textAlign: 'center', cursor: 'pointer', background: item.id===idState ? '#e3effbff' : null }}
+              >
               {' '}
               ${item.fv.toLocaleString()}
             </Card>

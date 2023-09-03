@@ -3,49 +3,93 @@ import React from 'react';
 
 export default function HpArticle() {
   return (
-    <Container maxWidth='md' sx={{marginTop:10}} >
+    <Container maxWidth="md" sx={{ marginTop: 10 }}>
       <Typography level="h3">What is compound interest?</Typography>
       <Typography level="body-lg">
-        For savers, the definition of compound interest is basic: It’s the
-        interest you earn on both your original money and on the interest you
-        keep accumulating. Compound interest allows your savings to grow faster
-        over time. In an account that pays compound interest, such as a standard
-        savings account, the return gets added to the original principal at the
-        end of every compounding period, typically daily or monthly. Each time
-        interest is calculated and added to the account, it results in a larger
-        balance. With the compound interest formula, the account earns more
-        interest in the next compounding period. For example, if you put $10,000
-        into a savings account with a 4% annual yield, compounded daily, you’d
-        earn $408 in interest the first year, $425 the second year, an extra
-        $442 the third year and so on. After 10 years of compounding, you would
-        have earned a total of $4,918 in interest. But remember, that’s just an
-        example. For longer-term savings, there are better places than savings
-        accounts to store your money, including Roth or traditional IRAs and
-        CDs.
+        Compound interest is a powerful concept in finance that can help your
+        money grow over time. It's like magic for your savings! Here's a simple
+        explanation:
+        <br />
+        <br />
+        Imagine you have $100 in a savings account that pays you 5% interest per
+        year. With simple interest, you'd earn $5 every year ($100 x 5%). But
+        with compound interest, it gets even better.
+        <br />
+        <br />
+        In the first year, you earn the same $5. Now, here's where it gets
+        interesting. In the second year, you not only earn 5% on your initial
+        $100 ($5) but also on the interest you earned in the first year ($5).
+        So, you earn 5% of $100 + 5% of $5, totaling $5.25.
+        <br />
+        <br />
+        This process continues, with each year's interest adding to your
+        principal (the original $100). Over time, your money grows faster and
+        faster. This compounding effect means your $100 can turn into a much
+        larger sum down the road. It's like a snowball rolling down a hill,
+        getting bigger as it goes.
+        <br />
+        <br />
+        Compound interest helps you save and invest wisely, allowing your money
+        to work for you and potentially build wealth over time. So, start early,
+        and let time and compounding do the heavy lifting for your financial
+        goals.
       </Typography>
 
-      <Typography sx={{marginTop:10}} level="h3">Compounding investment returns</Typography>
+      <Typography sx={{ marginTop: 10 }} level="h3">
+        How to estimate interest rate
+      </Typography>
       <Typography level="body-lg">
-        When you invest in the stock market, you don’t earn a set interest rate
-        but rather a return based on the change in the value of your investment.
-        When the value of your investment goes up, you earn a return. If you
-        leave your money and the returns you earn are invested in the market,
-        those returns compound over time in the same way that interest is
-        compounded. If you invested $10,000 in a mutual fund and the fund earned
-        a 6% return for the year, it means you gained $600, and your investment
-        would be worth $10,600. If you got an average 6% return the following
-        year, it means your investment would be worth $11,236. Over the years,
-        that money can really add up: If you kept that money in a retirement
-        account over 30 years and earned that average 6% return, for example,
-        your $10,000 would grow to more than $57,000. In reality, investment
-        returns will vary year to year and even day to day. In the short term,
-        riskier investments such as stocks or stock mutual funds may actually
-        lose value. But over a long time horizon, history shows that a
-        diversified growth portfolio can return an average of 6% annually.
-        Investment returns are typically shown at an annual rate of return.
-        Compounding can help fulfill your long-term savings and investment
-        goals, especially if you have time to let it work its magic over years
-        or decades. You can earn far more than what you started with.
+        Estimating an interest rate depends on the context and what you're
+        trying to calculate. Here are a few common scenarios and methods for
+        estimating interest rates:
+        <br />
+        <br />
+        1. <b>Savings Account or Investment Returns:</b> If you want to estimate
+        the interest rate you'll earn on a savings account or an investment, you
+        can usually find the annual percentage yield (APY) or the expected rate
+        of return provided by the financial institution or investment product.
+        Be sure to read the terms and conditions carefully, as these rates can
+        vary widely.
+        <br />
+        <br />
+        2. <b>Loan Interest Rate:</b> To estimate the interest rate on a loan,
+        such as a mortgage or car loan, you can use an online loan calculator.
+        Input the loan amount, term, and any other relevant details, and it will
+        calculate the approximate interest rate based on your inputs.
+        <br />
+        <br />
+        3. <b>Bond Yields:</b> For estimating the interest rate on bonds, you
+        can look up the current yield or yield to maturity (YTM) for the
+        specific bond you're interested in. Bond prices and yields are inversely
+        related, so as the price of a bond goes up, its yield goes down, and
+        vice versa.
+        <br />
+        <br />
+        4. <b>Market Interest Rates:</b> The general level of interest rates in
+        the financial markets, such as the prime rate or the yield on U.S.
+        Treasury bonds, can be indicative of the prevailing interest rate
+        environment. These rates can serve as a benchmark for estimating other
+        interest rates.
+        <br />
+        <br />
+        5. <b>Credit Score and Risk Assessment:</b> When applying for a loan or
+        credit card, your creditworthiness plays a significant role in
+        determining the interest rate you'll be offered. You can estimate your
+        rate based on your credit score and financial history. Many financial
+        institutions provide tools to get a rough estimate.
+        <br />
+        <br />
+        6. <b>Peer Comparison:</b> If you're unsure about a specific interest
+        rate, compare it to similar financial products offered by different
+        institutions. This can help you gauge whether the rate you're
+        considering is competitive.
+        <br />
+        <br />
+        Remember that these methods provide estimates, and the actual interest
+        rate you receive may vary based on individual circumstances, market
+        conditions, and negotiations with lenders or financial institutions.
+        Always read the fine print and consult with a financial advisor if you
+        have any doubts or specific financial needs.
       </Typography>
     </Container>
   );
