@@ -12,13 +12,23 @@ import Container from '@mui/material/Container';
 // import Tooltip from '@mui/material/Tooltip';
 // import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import MenuIcon from '@mui/icons-material/Menu';
+import { IconButton } from '@mui/joy';
+import logo from '../../Images/Logo.png';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-function ResponsiveAppBar() {
+interface Props {
+  isMobile: boolean;
+  handleOpen:()=>void;
+}
+
+function ResponsiveAppBar({ isMobile, handleOpen }: Props) {
   // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   // const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  // const [openMenu, setOpenMenu] = React.useState<boolean>(false);
 
   // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
   //   setAnchorElNav(event.currentTarget);
@@ -35,17 +45,26 @@ function ResponsiveAppBar() {
   //   setAnchorElUser(null);
   // };
 
+  const handleClickMenu = () => {
+    // setOpenMenu(true);
+    handleOpen();
+  };
+
   return (
-    <AppBar position="static" color='default' variant='outlined'>
+    <AppBar position="static" 
+    // color="default"
+    sx={{background:'#eaeaea'}}
+     variant="outlined">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
             href="/"
             sx={{
+              // marginLeft: 'auto', // Pushes the menu icon to the right
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
@@ -53,11 +72,23 @@ function ResponsiveAppBar() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-            }}
-          >
+            }}>
             LOGO
-          </Typography>
-
+          </Typography> */}
+            
+            <img src={logo} alt='logo' style={{height:50}}/>
+            
+          {isMobile && (
+            <IconButton
+              sx={{
+                marginLeft: 'auto', // Pushes the menu icon to the right
+                color:'#ff2e63'
+                
+              }}
+              onClick={handleClickMenu}>
+              <MenuIcon />
+            </IconButton>
+          )}
           {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"

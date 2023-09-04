@@ -1,229 +1,317 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Input,
-  Sheet,
-  Typography,
-  Alert,
-} from '@mui/joy';
-import { Grid } from '@mui/material';
-import { calculateFutureValue } from '../../utils/helpers';
+import { Button, Input, Sheet, Typography, Alert, Theme, Grid, FormControl } from '@mui/joy';
+import { calculateFutureValue, formatSums } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
-// import FormattedInputs from './FormatedInputs';
-
+import { postDataToDb } from '../../utils/database';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  appActions,
+  formActions,
+  resultCardActions,
+  sumsValuesActions,
+} from '../../store';
+import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import InputReactNumberFormat from './InputReactNumberFormat';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
+
 interface ParentProps {
-  sendDataToParent: (data: {
-    futureValue: number;
-    totalInterest: number;
-    futureValueArray: number[];
-    yearsNum: number;
-  }) => void;
-  setSubmited: React.Dispatch<React.SetStateAction<boolean>>;
+  setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 //-----------------------------------------------------------
-export default function CompoundForm({
-  sendDataToParent,
-  setSubmited,
-}: ParentProps) {
-  const [principal, setPrincipal] = useState<string>('');
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('');
-  const [years, setYears] = useState<string>('');
-  const [interestRate, setInterestRate] = useState<string>('');
-
+export default function CompoundForm({ setDataPosted }: ParentProps) {
   const [emptyField, setEmptyField] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
+
+  const [principalExceeds, setPrincipalExceeds] = useState<boolean>(false);
+  const [monthlyContributionExceeds, setMonthlyContributionExceeds] =
+    useState<boolean>(false);
+  const [yearsExceeds, setYearsExceeds] = useState<boolean>(false);
+  const [interestRateExceeds, setInterestRateExceeds] =
+    useState<boolean>(false);
+
+  const dispatch = useDispatch();
+  const reduxPrincipal = useSelector((state: any) => state.form.principal);
+  const reduxMonthlyContribution = useSelector(
+    (state: any) => state.form.monthlyContribution
+  );
+  const reduxYears = useSelector((state: any) => state.form.years);
+  const reduxInterestRate = useSelector(
+    (state: any) => state.form.interestRate
+  );
+
+  function AlertFieldsFalse() {
+    setEmptyField(false);
+    setPrincipalExceeds(false);
+    setMonthlyContributionExceeds(false);
+    setYearsExceeds(false);
+    setInterestRateExceeds(false);
+  }
+
+  const sheetStyles = (theme: Theme) => ({
+    padding: 3,
+    margin: '0 auto',
+    borderRadius: 10,
+    [theme.breakpoints.up('xs')]: {
+      width: '300px',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '450px',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '600px',
+    },
+  });
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
+    //Input checks:
     if (
-      principal === '' ||
-      monthlyContribution === '' ||
-      years === '' ||
-      interestRate === ''
+      reduxPrincipal === '' ||
+      reduxMonthlyContribution === '' ||
+      reduxYears === '' ||
+      reduxInterestRate === ''
     ) {
       setEmptyField(true);
       return;
     }
 
-    setEmptyField(false);
+    if (reduxPrincipal > 1000000000) {
+      setPrincipalExceeds(true);
+      return;
+    }
+    if (reduxMonthlyContribution > 1000000) {
+      setMonthlyContributionExceeds(true);
+      return;
+    }
+    if (reduxYears > 100) {
+      setYearsExceeds(true);
+      return;
+    }
+    if (reduxInterestRate > 100) {
+      setInterestRateExceeds(true);
+      return;
+    }
+
+    AlertFieldsFalse();
 
     //destructuring returning elements from function that calculates the compound
     const { futureValue, totalInterest, futureValueArray } =
       calculateFutureValue(
-        +principal,
-        +monthlyContribution,
-        +years,
-        +interestRate
+        +reduxPrincipal,
+        +reduxMonthlyContribution,
+        +reduxYears,
+        +reduxInterestRate
       );
-    const yearsNum: number = +years;
-    sendDataToParent({
-      futureValue,
-      totalInterest,
-      futureValueArray,
+    const yearsNum: number = +reduxYears;
+
+    const formattedFutureValue = formatSums(futureValue);
+    const formattedTotalInterest = formatSums(totalInterest);
+
+    dispatch(sumsValuesActions.setReduxfutureValue(formattedFutureValue));
+    dispatch(sumsValuesActions.setReduxtotalInterest(formattedTotalInterest));
+    dispatch(sumsValuesActions.setReduxfutureValueArray(futureValueArray));
+
+    dispatch(appActions.setReduxSubmit(true));
+
+    const totalDeposit = futureValue - totalInterest;
+
+    postDataToDb(
+      reduxPrincipal,
+      reduxMonthlyContribution,
       yearsNum,
-    }); //send to parent
-    setSubmited(true); // sent from parent
+      +reduxInterestRate,
+      futureValue,
+      totalDeposit,
+      totalInterest
+    ).then((res) => {
+      if (res) {
+        // render sums card
+        setDataPosted((prev) => {
+          return !prev;
+        });
+      }
+    });
+
+    setDisabled(true);
   };
 
   const handleReset = () => {
-    setPrincipal('');
-    setMonthlyContribution('');
-    setYears('');
-    setInterestRate('');
+    dispatch(formActions.setReduxPrincipal(''));
+    dispatch(formActions.setReduxMonthlyContribution(''));
+    dispatch(formActions.setReduxYears(''));
+    dispatch(formActions.setReduxInterestRate(''));
+
+    dispatch(appActions.setReduxSubmit(false));
+    dispatch(resultCardActions.setId(false));
+
+    setDisabled(false);
+    AlertFieldsFalse();
   };
 
   const handleInputChange = (e: Event): void => {
-    setEmptyField(false);
-    if (e.target.id === 'initial-investment') {
-      setPrincipal(e.target.value);
-    }
-    if (e.target.id === 'monthly-contribution')
-      setMonthlyContribution(e.target.value);
-    if (e.target.id === 'years-to-grow') setYears(e.target.value);
-    if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
-  };
-  // const handleInputChange = (e: Event): void => {
-  //   if (e.target.id === 'initial-investment') {
-  //     const inputValue = e.target.value.replace(/,/g, ''); // Remove existing commas
-  //     const numericValue = parseFloat(inputValue);
-  //     if (!isNaN(numericValue)) {
-  //       setPrincipal(numericValue.toLocaleString()); // Format with commas
-  //     } else {
-  //       setPrincipal(inputValue); // If not a valid number, set as is
-  //     }
-  //   } else if (e.target.id === 'monthly-contribution') {
-  //           setMonthlyContribution(e.target.value);
+    setDisabled(false);
+    AlertFieldsFalse();
 
-  //   }
-  //     if (e.target.id === 'years-to-grow') setYears(e.target.value);
-  //   if (e.target.id === 'interest-rate') setInterestRate(e.target.value);
-  // };
+    if (e.target.id === 'initial-investment')
+      dispatch(formActions.setReduxPrincipal(e.target.value));
+    if (e.target.id === 'monthly-contribution')
+      dispatch(formActions.setReduxMonthlyContribution(e.target.value));
+    if (e.target.id === 'years-to-grow')
+      dispatch(formActions.setReduxYears(e.target.value));
+    if (e.target.id === 'interest-rate')
+      dispatch(formActions.setReduxInterestRate(e.target.value));
+  };
 
   return (
-    <Sheet
-      variant="outlined"
-      sx={{
-        width: '600px',
-        margin: '0 auto',
-        borderRadius: 10,
-      }}>
-      <form onSubmit={handleSubmit}>
-        <Grid container direction={'column'}>
-          {/* Inputs */}
-
+    <>
+      <Sheet variant="outlined" sx={sheetStyles}>
+        <form onSubmit={handleSubmit}>
           <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Initial Investment
-            </Typography>
+            container
+            spacing={2}
+            columns={16}
+            sx={{ flexGrow: 1 }}
+            rowSpacing={{ xs: 2, md: 5 }}>
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Initial Investment
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+  
+              <Input
+                type="number"
+                sx={{ marginRight: 2, height: '100%' }}
+                value={reduxPrincipal}
+                id="initial-investment"
+                placeholder="Example: 20,000"
+                variant="outlined"
+                color="primary"
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-            <Input
-              type="number"
-              sx={{ marginRight: 2 }}
-              value={principal}
-              id="initial-investment"
-              placeholder="Example: 20,000"
-              variant="outlined"
-              color="primary"
-              onChange={handleInputChange}
-            />
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Monthly Contribution
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={reduxMonthlyContribution}
+                id="monthly-contribution"
+                placeholder="Example: 1200"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height: '100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Years to Grow
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={reduxYears}
+                id="years-to-grow"
+                placeholder="Example: 15"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height: '100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+
+            <Grid xs={10} mt={1.5}>
+              <Typography marginY={1} marginX={4}>
+                Estimated Interest Rate (%)
+              </Typography>
+            </Grid>
+            <Grid xs={6} mt={1.5}>
+              <Input
+                type="number"
+                value={reduxInterestRate}
+                id="interest-rate"
+                placeholder="Example: 7"
+                variant="outlined"
+                color="primary"
+                sx={{ marginRight: 2, height: '100%' }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            {/* Buttons */}
+            <Grid xs={10} mt={1.5}></Grid>
+            <Grid xs={6} padding={2} display="flex" justifyContent="flex-end">
+              <Button
+                // color="warning"
+                sx={{ marginX: '8px', background: '#3a4252' }}
+                onClick={handleReset}>
+                Reset
+              </Button>
+              <Button
+                type="submit"
+                disabled={disabled}
+                sx={{ background: '#ff2e63' }}>
+                Submit
+              </Button>
+            </Grid>
           </Grid>
 
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Monthly Contribution
-            </Typography>
-            <Input
-              type="number"
-              value={monthlyContribution}
-              id="monthly-contribution"
-              placeholder="Example: 1200"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Years to Grow
-            </Typography>
-            <Input
-              type="number"
-              value={years}
-              id="years-to-grow"
-              placeholder="Example: 15"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid
-            width={'600px'}
-            item
-            display={'flex'}
-            justifyContent={'space-between'}
-            marginY={4}>
-            <Typography marginY={1} marginX={4}>
-              Estimated Interest Rate (%)
-            </Typography>
-            <Input
-              type="number"
-              value={interestRate}
-              id="interest-rate"
-              placeholder="Example: 7"
-              variant="outlined"
-              color="primary"
-              sx={{ marginRight: 2 }}
-              onChange={handleInputChange}
-            />
-          </Grid>
-
-          {/* Buttons */}
-          <Grid
-            item
-            xs={12}
-            padding={2}
-            display="flex"
-            justifyContent="flex-end">
-            <Button
-              color="warning"
-              sx={{ marginX: '8px' }}
-              onClick={handleReset}>
-              Reset
-            </Button>
-            <Button type="submit">Submit</Button>
-          </Grid>
-
+          {/* Alerts */}
           {emptyField && (
             <Alert
-              sx={{ margin: 3 }}
+              sx={{ marginTop: 4 }}
               startDecorator={<WarningIcon />}
               variant="soft"
               color="danger">
-              No empty fields allowed{' '}
+              No empty fields are allowed{' '}
             </Alert>
           )}
-        </Grid>
-      </form>
-    </Sheet>
+          {principalExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Initial Investment must be less than 1 billion
+            </Alert>
+          )}
+          {monthlyContributionExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Monthly contribution must be less than 1 million
+            </Alert>
+          )}
+          {yearsExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Years to grow must be less than 100
+            </Alert>
+          )}
+          {interestRateExceeds && (
+            <Alert
+              sx={{ marginTop: 4 }}
+              startDecorator={<WarningIcon />}
+              variant="soft"
+              color="danger">
+              Interest rate must be less than 100
+            </Alert>
+          )}
+        </form>
+      </Sheet>
+    </>
   );
 }

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 
-interface props {
-  dataX?: number[];
-  dataY?: number[];
+interface Props {
+  dataX: number[];
+  dataY: number[];
 }
 
 export default function BasicLineChart({
   dataX,
   dataY
-}:props) {
+}:Props) {
 
   return (
     <LineChart
@@ -19,10 +19,9 @@ export default function BasicLineChart({
           data: dataY,
           curve:'linear',
           color: '#3498DB',
- 
         },
       ]}
-      width={800}
+      width={700}
       height={500}
     />
   );
