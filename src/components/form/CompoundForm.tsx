@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input, Sheet, Typography, Alert, Theme, Grid } from '@mui/joy';
+import { Button, Input, Sheet, Typography, Alert, Theme, Grid, FormControl } from '@mui/joy';
 import { calculateFutureValue, formatSums } from '../../utils/helpers';
 import WarningIcon from '@mui/icons-material/Warning';
 import { postDataToDb } from '../../utils/database';
@@ -10,16 +10,16 @@ import {
   resultCardActions,
   sumsValuesActions,
 } from '../../store';
+import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import InputReactNumberFormat from './InputReactNumberFormat';
 //-----------------------------------------------------------
 type Event = React.ChangeEvent<HTMLInputElement>;
 
 interface ParentProps {
   setDataPosted: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 //-----------------------------------------------------------
 export default function CompoundForm({ setDataPosted }: ParentProps) {
-
   const [emptyField, setEmptyField] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(false);
 
@@ -40,8 +40,7 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
     (state: any) => state.form.interestRate
   );
 
-
-  function AlertFieldsFalse(){
+  function AlertFieldsFalse() {
     setEmptyField(false);
     setPrincipalExceeds(false);
     setMonthlyContributionExceeds(false);
@@ -95,7 +94,6 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
       return;
     }
 
-    
     AlertFieldsFalse();
 
     //destructuring returning elements from function that calculates the compound
@@ -182,6 +180,7 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
               </Typography>
             </Grid>
             <Grid xs={6} mt={1.5}>
+  
               <Input
                 type="number"
                 sx={{ marginRight: 2, height: '100%' }}
@@ -252,24 +251,26 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
             <Grid xs={6} padding={2} display="flex" justifyContent="flex-end">
               <Button
                 // color="warning"
-                sx={{ marginX: '8px' , background:'#3a4252' }}
+                sx={{ marginX: '8px', background: '#3a4252' }}
                 onClick={handleReset}>
                 Reset
               </Button>
-              <Button type="submit" disabled={disabled} sx={{background:'#ff2e63'}}>
+              <Button
+                type="submit"
+                disabled={disabled}
+                sx={{ background: '#ff2e63' }}>
                 Submit
               </Button>
             </Grid>
           </Grid>
-          
+
           {/* Alerts */}
           {emptyField && (
             <Alert
               sx={{ marginTop: 4 }}
               startDecorator={<WarningIcon />}
               variant="soft"
-              color="danger"
-              >
+              color="danger">
               No empty fields are allowed{' '}
             </Alert>
           )}
@@ -298,7 +299,7 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
               variant="soft"
               color="danger">
               Years to grow must be less than 100
-              </Alert>
+            </Alert>
           )}
           {interestRateExceeds && (
             <Alert
@@ -314,6 +315,3 @@ export default function CompoundForm({ setDataPosted }: ParentProps) {
     </>
   );
 }
-
-
-

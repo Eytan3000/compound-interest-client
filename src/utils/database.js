@@ -1,4 +1,5 @@
-const url = 'http://localhost:8090/';
+// const url = 'http://localhost:8090/';
+const url = 'https://compound-interest-calc-a22aeeb9e026.herokuapp.com/';
 
 export async function postDataToDb(
   principal,
